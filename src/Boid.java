@@ -12,7 +12,7 @@ public class Boid {
 	/**
 	 * Hyperparameters
 	 */
-	private static int initialVelocity = 5;
+	private static int initialVelocity = 3;
 	private static double connectionStrength = 1.0;
 	private static double socializationFactor = 0.05;
 	private static double desocializationFactor = -0.01;
@@ -28,6 +28,7 @@ public class Boid {
 	public boolean hasDisease = false;
 	public boolean toRemove = false;
 	public int lifespan = 100;
+	public int diseaseResistance = 50;
 	
 	/**
 	 * Private parameters: 

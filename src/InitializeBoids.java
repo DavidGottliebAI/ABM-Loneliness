@@ -23,7 +23,7 @@ public class InitializeBoids implements Comparable<InitializeBoids>, Iterable<Bo
 	 * Public parameters
 	 */
 	public int numBoids;
-	public int maxVelocity = 10;
+	public int maxVelocity = 5;
 	public double[][][] popData;
 	public double[][] fitnessData;
 	public ArrayList<Boid> boids = new ArrayList<Boid>();
@@ -39,7 +39,8 @@ public class InitializeBoids implements Comparable<InitializeBoids>, Iterable<Bo
 	/**
 	 * Private parameters
 	 */
-	private static int dimEnvironment = 200;
+	public static int dimEnvironmentX = 200;
+	public static int dimEnvironmentY = 200;
 	private static int boidDistance = 5;
 	private static int velBoundChg = 2;
 	private static int timeSteps = 1000;
@@ -47,23 +48,24 @@ public class InitializeBoids implements Comparable<InitializeBoids>, Iterable<Bo
 	private static int maxConnections = 3;
 	private static int minGroupSize = 3;
 	private static int resourceDistance = 20;
-	private static int spreadDistance = 10;
+	private static int spreadDistance = 15;
 	private static double malaise = 1.5;
-	private static double diseaseSpreadChance = 0.02;
 	private JPanel buttonPanel;
 	private JButton startButton;
 	private int curTime = 0;
 	private String visualize;
 	private double[] predatorVec = {0, 0};
 	private double commonInterest = 0.1;
+	private Fitness fitnessFunction = new Fitness(fitnessType, dimEnvironmentX, dimEnvironmentY);
 	
 	public InitializeBoids(ArrayList<Boid> boids, int seed) {
 		this.numBoids = boids.size();
 		fitnessType = boids.get(0).fitnessType;
 		totalFitness = 0;
-		this.frame = new JFrame();
-		this.frame.setSize(dimEnvironment * 5, dimEnvironment * 5);
+		
 		for(int i = 0; i < boids.size(); i++) {
+//			this.frame = new JFrame();
+//			this.frame.setSize(dimEnvironment * 5, dimEnvironment * 5);
 			
 			double[] sensitivity = new double[5];
 			for(int j = 0; j < boids.get(i).getSensitivity().size(); j++) {
@@ -72,7 +74,7 @@ public class InitializeBoids implements Comparable<InitializeBoids>, Iterable<Bo
 			double fitness = boids.get(i).getFitness();
 			
 			Random random = MyRandom.getInstanceOfRandom();
-			
+//			Boid newBoid = (i==0) ? new Boid(50, 100, 1, 0, 1, sensitivity, "one", "black") : new Boid(150, 100, 1, 0, 1, sensitivity, "one", "black");
 			Boid newBoid = new Boid(random.nextInt(200), random.nextInt(200), 0.0, 0.0, 0.0, sensitivity, "one", "black");
 			newBoid.setFitness(fitness);
 			this.boids.add(newBoid);
@@ -91,9 +93,10 @@ public class InitializeBoids implements Comparable<InitializeBoids>, Iterable<Bo
 		this.numBoids = numBoids;
 		this.fitnessType = fitnessType;
 		this.visualize = visualize;
-		this.frame = new JFrame();
-		this.frame.setSize(dimEnvironment * 5, dimEnvironment * 5);
+		
 		if(visualize.equals("viz")) {
+			this.frame = new JFrame();
+			this.frame.setSize(dimEnvironmentX * 5, dimEnvironmentY * 5);
 			this.frame.setTitle("Boids!");
 			this.buttonPanel = new JPanel();
 			this.startButton = new JButton("Start");
@@ -116,6 +119,8 @@ public class InitializeBoids implements Comparable<InitializeBoids>, Iterable<Bo
 		} else {
 			simulationRunning = true;
 		}
+		
+		
 
 		this.popData = new double[numBoids][3][timeSteps + 1];
 		this.fitnessData = new double[numBoids][timeSteps];
@@ -133,12 +138,6 @@ public class InitializeBoids implements Comparable<InitializeBoids>, Iterable<Bo
 				public void actionPerformed(ActionEvent arg0) {
 					
 					if(simulationRunning) {
-						
-						System.out.println(curTime);
-						for(Boid b : boids) {
-							System.out.println("x: " + b.position[0] + ", y: " + b.position[1]);
-						}
-						System.out.println("");
 						
 						if(curTime == 0 && fitnessType.equals("disease")) {
 							Random random = MyRandom.getInstanceOfRandom();
@@ -214,15 +213,9 @@ public class InitializeBoids implements Comparable<InitializeBoids>, Iterable<Bo
 			predator = new Predator(random.nextInt(200), random.nextInt(200), boids);
 		}
 		
-		this.frame.setVisible(true);
 		for(int i = 0; i < timeSteps; i++) {
 			if(simulationRunning) {
-				
-				System.out.println(curTime);
-				for(Boid b : boids) {
-					System.out.println("x: " + b.position[0] + ", y: " + b.position[1]);
-				}
-				System.out.println("");
+		
 				
 				for(int k = 0; k < numBoids; k++) {
 					popData[k][0][curTime] = boids.get(k).getPosition()[0];
@@ -282,10 +275,11 @@ public class InitializeBoids implements Comparable<InitializeBoids>, Iterable<Bo
 	
 	private void spread(Boid boid) {
 		for(Boid b : boids) {
-			Random random = MyRandom.getInstanceOfRandom();
-			if(b != boid && distanceBetween(boid.position, b.position) < spreadDistance && random.nextDouble() < diseaseSpreadChance) {
-				System.out.println("diseased");
-				b.hasDisease = true;
+			if(b != boid && distanceBetween(boid.position, b.position) < spreadDistance) {
+				b.diseaseResistance -= 1;
+				if(b.diseaseResistance < 1) {
+					b.hasDisease = true;
+				}
 			}
 		}
 	}
@@ -344,11 +338,14 @@ public class InitializeBoids implements Comparable<InitializeBoids>, Iterable<Bo
 	public void update() {
 		for(Boid b : boids) {
 
-			this.calculateFitness(b);
+			
+			this.fitnessFunction.calculateFitness(b);
+			if(fitnessType.equals("energy")) this.fitnessFunction.calculateFitness(b, boids, curTime, resourceLocation);
+			
 			
 			if(fitnessType.equals("energy")) {
 				if(distanceBetween(b.getPosition(), resourceLocation) > resourceDistance) {
-					b.energy -= 0.01;
+					b.energy -= 0.001;
 				} else {
 					b.energy += 0.05;
 				}
@@ -386,17 +383,25 @@ public class InitializeBoids implements Comparable<InitializeBoids>, Iterable<Bo
 					+ b.getSensitivity().get(3) * v4[1] + b.getSensitivity().get(4) * v5[1]) + predatorVec[1];
 			
 			// Restrict oscillations
-			if(b.velocity[0] > maxVelocity) {
-				b.velocity[0] = maxVelocity;
-			} else if(b.velocity[0] < -1 * maxVelocity) {
-				b.velocity[0] = -1 * maxVelocity;
-			}
-			if(b.velocity[1] > maxVelocity) {
-				b.velocity[1] = maxVelocity;
-			} else if(b.velocity[0] < -1 * maxVelocity) {
-				b.velocity[1] = -1 * maxVelocity;
+			
+			double speed = Math.sqrt(Math.pow(b.velocity[0],2) + Math.pow(b.velocity[1],2));
+			
+			if(speed > maxVelocity) {
+				b.velocity[0] = (b.velocity[0] / speed) * maxVelocity;
+				b.velocity[1] = (b.velocity[1] / speed) * maxVelocity;
 			}
 			
+//			if(b.velocity[0] > maxVelocity) {
+//				b.velocity[0] = maxVelocity;
+//			} else if(b.velocity[0] < -1 * maxVelocity) {
+//				b.velocity[0] = -1 * maxVelocity;
+//			}
+//			if(b.velocity[1] > maxVelocity) {
+//				b.velocity[1] = maxVelocity;
+//			} else if(b.velocity[0] < -1 * maxVelocity) {
+//				b.velocity[1] = -1 * maxVelocity;
+//			}
+//			
 			if(b.hasDisease) {
 				b.velocity[0] /= malaise;
 				b.velocity[1] /= malaise;
@@ -405,8 +410,8 @@ public class InitializeBoids implements Comparable<InitializeBoids>, Iterable<Bo
 			b.position[0] += b.velocity[0];
 			b.position[1] += b.velocity[1];
 			
-			if(b.position[0] > frame.getWidth() / 5 + 50 || 
-				b.position[1] > frame.getHeight() / 5 + 50) {
+			if(b.position[0] > dimEnvironmentX + 50 || 
+				b.position[1] > dimEnvironmentY + 50) {
 				b.toRemove = true;
 			}
 			
@@ -486,6 +491,10 @@ public class InitializeBoids implements Comparable<InitializeBoids>, Iterable<Bo
 		v[0] += (boid.getBestPosition()[0] - boid.getPosition()[0]) / 5;
 		v[1] += (boid.getBestPosition()[1] - boid.getPosition()[1]) / 5;
 		
+		if(boid.getBestFitness() == 0) {
+			v = new double[] {3,3};
+		}
+		
 		return v;
 	}
 	
@@ -564,31 +573,6 @@ public class InitializeBoids implements Comparable<InitializeBoids>, Iterable<Bo
 		
 	}
 	
-	public void calculateFitness(Boid b) {
-		if(b.fitnessType == "one" || b.fitnessType == "predator") {
-			b.setFitness(1 / Math.sqrt(Math.pow(b.position[0] - frame.getWidth() / 10, 2) + (Math.pow(b.position[1] - frame.getHeight() / 10, 2))));
-		} else if(b.fitnessType == "two") {
-			b.setFitness(1 / (Math.sqrt(Math.pow(b.position[0] - frame.getWidth() / 25, 2) 
-									 + (Math.pow(b.position[1] - frame.getHeight() / 25, 2))) 
-						    + Math.sqrt(Math.pow(b.position[0] - 4 * frame.getWidth() / 25, 2) 
-							         + (Math.pow(b.position[1] - 4 * frame.getHeight() / 25, 2)))));
-		} else if(b.fitnessType == "energy") {
-			// to start, and with every 50 timesteps, randomize the position of the fitness
-			if(curTime % 50 == 0) {
-				for(Boid boid : boids) {
-					boid.setBestFitness(Double.NEGATIVE_INFINITY);
-				}
-				Random random = MyRandom.getInstanceOfRandom();
-				resourceLocation[0] = random.nextDouble() * 200;
-				resourceLocation[1] = random.nextDouble() * 200;
-			} 
-			b.setFitness(1 / Math.sqrt(Math.pow(b.position[0] - resourceLocation[0], 2) 
-					+ (Math.pow(b.position[1] - resourceLocation[1], 2))));
-		} else if(b.fitnessType == "disease") {
-			b.setFitness(1 / Math.sqrt(Math.pow(b.position[0] - frame.getWidth() / 10, 2) + (Math.pow(b.position[1] - frame.getHeight() / 10, 2))));
-		}
-	}
-	
 	/**
 	 * Function: Make sure agents do not completely wander outside of bounds (large enough so that they roam around entire screen)
 	 * 
@@ -598,13 +582,13 @@ public class InitializeBoids implements Comparable<InitializeBoids>, Iterable<Bo
 	private void boundPosition(Boid boid) {
 		if(boid.position[0] < 0) {
 			boid.velocity[0] = velBoundChg;
-		} else if(boid.position[0] > this.frame.getWidth() / 5) {
+		} else if(boid.position[0] > dimEnvironmentX) {
 			boid.velocity[0] = -velBoundChg;
 		}
 		
 		if(boid.position[1] < 0) {
 			boid.velocity[1] = velBoundChg;
-		} else if(boid.position[1] > this.frame.getHeight() / 5) {
+		} else if(boid.position[1] > dimEnvironmentY) {
 			boid.velocity[1] = -velBoundChg;
 		}
 	}

@@ -7,7 +7,7 @@ import java.util.Random;
 
 public class BoidPopulation {
 	
-	private int mutationRate = 1;
+	private int mutationRate = 5;
 	private int generations = 500;
 	private int populationSize;
 	public int sizeMultiplier = 5;
@@ -34,7 +34,8 @@ public class BoidPopulation {
 			ArrayList<Boid> boidsPopulation = new ArrayList<Boid>();
 			for (int j = 0; j < boidsInitial.numBoids; j++) {
 				double[] sensitivity = {0, 0, 0, 0, 0};
-				Boid b = new Boid(random.nextInt(100), random.nextInt(100), 1, 0, 1, sensitivity, "one", "black");
+//				Boid b = new Boid(random.nextInt(100), random.nextInt(100), 1, 0, 1, sensitivity, "one", "black");
+				Boid b = (j==0) ? new Boid(50, 100, 1, 0, 1, sensitivity, "one", "black") : new Boid(150, 100, 1, 0, 1, sensitivity, "one", "black");
 				if(genome[0]) b.setInterest(random.nextDouble());
 				if(genome[1]) b.setExpected(random.nextDouble());
 				if(genome[2]) b.setInteractChance(random.nextDouble());
@@ -87,7 +88,7 @@ public class BoidPopulation {
 					x[3] += boxData[3][sum] = allBoids.get(j).boids.get(i).getSensitivity().get(3);
 					x[4] += boxData[4][sum] = allBoids.get(j).boids.get(i).getSensitivity().get(4);
 					x[5] += boxData[5][sum] = allBoids.get(j).boids.get(i).getExpected();
-//								x[6] += boxData[6][sum] = allBoids.get(j).boids.get(i).getFitness();
+					x[6] += boxData[6][sum] = allBoids.get(j).boids.get(i).getFitness();
 					sum++;
 				}
 			}
@@ -98,6 +99,7 @@ public class BoidPopulation {
 				genData[1][i][3][k] = x[3] / (metaPopulationSize * populationSize);
 				genData[1][i][4][k] = x[4] / (metaPopulationSize * populationSize);
 				genData[1][i][5][k] = x[5] / (metaPopulationSize * populationSize);
+				genData[1][i][6][k] = x[6] / (metaPopulationSize * populationSize);
 			}
 			
 			// Collecting best data
@@ -108,7 +110,7 @@ public class BoidPopulation {
 				genData[2][i][3][k] = allBoids.get(allBoids.size()-1).boids.get(i).getSensitivity().get(3);
 				genData[2][i][4][k] = allBoids.get(allBoids.size()-1).boids.get(i).getSensitivity().get(4);
 				genData[2][i][5][k] = allBoids.get(allBoids.size()-1).boids.get(i).getExpected();
-				genData[2][i][5][k] = allBoids.get(allBoids.size()-1).boids.get(i).getFitness();
+				genData[2][i][6][k] = allBoids.get(allBoids.size()-1).boids.get(i).getFitness();
 			}
 			
 			for(int j = 0; j < metaPopulationSize; j++) {

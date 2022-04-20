@@ -50,8 +50,8 @@ public class BoidVisualizer extends JComponent{
 		
 		for(int i = 0; i < 100; i++) {
 			for(int j = 0; j < 100; j++) {
-				double x = i * initialBoids.frame.getWidth() / 100;
-				double y = j * initialBoids.frame.getHeight() / 100;
+				double x = i * initialBoids.dimEnvironmentX / 20;
+				double y = j * initialBoids.dimEnvironmentY / 20;
 				double fitness = calculateFitness(x,y);
 				int colorValue = (int) (fitness*100000);
 				
@@ -129,8 +129,8 @@ public class BoidVisualizer extends JComponent{
 	}
 	
 	public double calculateFitness(double x, double y) {
-		return 1 / (Math.sqrt(Math.pow(x - initialBoids.frame.getWidth() / 25, 2) + (Math.pow(y - initialBoids.frame.getHeight() / 25, 2))) 
-				+ Math.sqrt(Math.pow(x - 4 * initialBoids.frame.getWidth() / 25, 2) 
-				+ (Math.pow(y - 4 * initialBoids.frame.getHeight() / 25, 2))));
+		return 1 / (Math.sqrt(Math.pow(x - initialBoids.dimEnvironmentX / 5, 2) + (Math.pow(y - initialBoids.dimEnvironmentY / 5, 2))) 
+				+ Math.sqrt(Math.pow(x - 4 * initialBoids.dimEnvironmentX / 5, 2) 
+				+ (Math.pow(y - 4 * initialBoids.dimEnvironmentY / 5, 2))));
 	}
 }
