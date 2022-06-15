@@ -138,7 +138,7 @@ public class BoidVisualizer extends JComponent{
 	
 	public double calculateFitness(double x, double y) {
 		return 1 / (Math.sqrt(Math.pow(x - initialBoids.dimEnvironmentX / 5, 2) + (Math.pow(y - initialBoids.dimEnvironmentY / 5, 2))) 
-				+ Math.sqrt(Math.pow(x - 4 * initialBoids.dimEnvironmentX / 5, 2) 
-				+ (Math.pow(y - 4 * initialBoids.dimEnvironmentY / 5, 2))));
+				+ Math.sqrt(Math.pow(x - 4 * initialBoids.dimEnvironmentX / 5, 2)
+						+ (Math.pow(y - 4 * initialBoids.dimEnvironmentY / 5, 2))));
 	}
 }

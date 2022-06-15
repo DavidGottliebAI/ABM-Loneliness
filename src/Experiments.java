@@ -11,7 +11,7 @@ public class Experiments {
 	private static int elevationLow = 10;
 	
 	public static void main(String[] args) throws IOException {
-		experiment7a();
+		experiment7b();
 	}
 	
 	private static void experimentDistribution() throws IOException {
@@ -54,9 +54,9 @@ public class Experiments {
 		
 		hills.add(new Hill(50, 50, 10, 500));
 		hills.add(new Hill(150, 150, 10, 100));
-		
-		initialPositions.add(new int[] {45, 45});
-		initialPositions.add(new int[] {145, 145});
+
+		initialPositions.add(new int[] { 45, 45 });
+		initialPositions.add(new int[] { 145, 145 });
 		
 		boolean[] exampleGenome = {true,true,true,true,true,true,true};
 		new BoidPopulation(5, exampleGenome, "", 2, 100, false, hills, initialPositions, experimentName);

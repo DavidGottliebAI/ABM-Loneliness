@@ -45,7 +45,6 @@ public class Fitness {
 	}
 	
 	private double distanceBetween(double[] pos1, double[] pos2) {
-		return Math.sqrt(Math.pow(pos2[0] - pos1[0], 2) 
-				+ Math.pow(pos2[1] - pos1[1], 2));
+		return Math.sqrt(Math.pow(pos2[0] - pos1[0], 2) + Math.pow(pos2[1] - pos1[1], 2));
 	}
 }

@@ -1,6 +1,6 @@
 public class Hill {
 
-	private double[] position = {0,0};
+	private double[] position = { 0, 0 };
 	private int radius;
 	private int elevation;
 
@@ -10,15 +10,15 @@ public class Hill {
 		this.radius = radius;
 		this.elevation = elevation;
 	}
-	
+
 	public double[] getPosition() {
 		return this.position;
 	}
-	
+
 	public int getRadius() {
 		return this.radius;
 	}
-	
+
 	public int getElevation() {
 		return this.elevation;
 	}
