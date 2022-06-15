@@ -129,6 +129,7 @@ public class BoidPopulation {
 			}
 			
 			for(int j = 0; j < metaPopulationSize; j++) {
+				// Scramble
 				allBoids.get(j).runSim();
 			}
 			
@@ -193,7 +194,7 @@ public class BoidPopulation {
 		Distribution dist = new Distribution();
 		for(InitializeBoids population : allBoids) {
 			for(Boid b : population.boids) {
-				if(genome[0] && random.nextInt(100) + 1 <= mutatePercentage) b.setExpected(random.nextDouble());
+				if(genome[0] && random.nextInt(100) + 1 <= mutatePercentage) b.setExpected(dist.calculateDistibutionValue(b.getExpected(), 0.1));
 				if(genome[1] && random.nextInt(100) + 1 <= mutatePercentage) b.setSensitivity(0, dist.calculateDistibutionValue(b.getSensitivity().get(0), 0.1));
 				if(genome[2] && random.nextInt(100) + 1 <= mutatePercentage) b.setSensitivity(1, dist.calculateDistibutionValue(b.getSensitivity().get(1), 0.1));
 				if(genome[3] && random.nextInt(100) + 1 <= mutatePercentage) b.setSensitivity(2, dist.calculateDistibutionValue(b.getSensitivity().get(2), 0.1));
