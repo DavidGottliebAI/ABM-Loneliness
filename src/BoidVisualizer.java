@@ -48,20 +48,20 @@ public class BoidVisualizer extends JComponent{
 		
 		// TODO: dependent on the fitness being used
 		
-		for(int i = 0; i < 100; i++) {
-			for(int j = 0; j < 100; j++) {
-				double x = i * initialBoids.dimEnvironmentX / 20;
-				double y = j * initialBoids.dimEnvironmentY / 20;
-				double fitness = calculateFitness(x,y);
-				int colorValue = (int) (fitness*100000);
-				
-				if(colorValue > 255) {
-					colorValue = 255;
-				}
-				g2.setColor(new Color(0, colorValue,0));
-				g2.fillOval((int) x, (int) y, 20, 20);
-			}
-		}
+//		for(int i = 0; i < 100; i++) {
+//			for(int j = 0; j < 100; j++) {
+//				double x = i * initialBoids.dimEnvironmentX / 20;
+//				double y = j * initialBoids.dimEnvironmentY / 20;
+//				double fitness = calculateFitness(x,y);
+//				int colorValue = (int) (fitness*100000);
+//				
+//				if(colorValue > 255) {
+//					colorValue = 255;
+//				}
+//				g2.setColor(new Color(0, colorValue,0));
+//				g2.fillOval((int) x, (int) y, 20, 20);
+//			}
+//		}
 		
 		
 //		if(initialBoids.fitnessType.equals("one")) {
@@ -72,6 +72,14 @@ public class BoidVisualizer extends JComponent{
 //			g2.fillOval(this.initialBoids.frame.getWidth() / 5, this.initialBoids.frame.getHeight() / 5, 20, 20);
 //			g2.fillOval(4 * this.initialBoids.frame.getWidth() / 5, 4 * this.initialBoids.frame.getHeight() / 5, 20, 20);
 //		}
+		
+		g2.setColor(Color.ORANGE);
+		for(Hill hill : initialBoids.hills) {
+			g2.fillOval((int) hill.getPosition()[0] * this.adjustment - hill.getRadius(), 
+						(int) hill.getPosition()[1] * this.adjustment - hill.getRadius(), 
+						hill.getRadius() * this.adjustment, 
+						hill.getRadius() * this.adjustment);
+		}
 		
 		if(this.update) {
 			for(Boid b : boids) {

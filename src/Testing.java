@@ -11,11 +11,11 @@ public class Testing {
 	
 		@Test 
 		public void R0() throws IOException{
-			InitializeBoids initialize = new InitializeBoids("", 2, "one", 70);
+			InitializeBoids initialize = new InitializeBoids("", 2, "one", 70, false);
 			ArrayList<Boid> boids = new ArrayList<Boid>();
 			double[] sensitivity1 = {0,0,0,0,0};
-			Boid b1 = new Boid(50, 50, 0.0, 1.0, 1.0, sensitivity1, "one", "");
-			Boid b2 = new Boid(80, 80, 0.0, 1.0, 1.0, sensitivity1, "one", "blue");
+			Boid b1 = new Boid(50, 50, 0.0, sensitivity1, "one", "");
+			Boid b2 = new Boid(80, 80, 0.0, sensitivity1, "one", "blue");
 			boids.add(b1);
 			boids.add(b2);
 			initialize.setPositionsSpecified(boids);
@@ -28,11 +28,11 @@ public class Testing {
 
 		@Test
 		public void R1() throws IOException{
-			InitializeBoids initialize = new InitializeBoids("", 2, "one", 70);
+			InitializeBoids initialize = new InitializeBoids("", 2, "one", 70, false);
 			ArrayList<Boid> boids = new ArrayList<Boid>();
 			double[] sensitivity1 = {1,0,0,0,0};
-			Boid b1 = new Boid(50, 50, 0.0, 1.0, 1.0, sensitivity1, "one", "");
-			Boid b2 = new Boid(80, 80, 0.0, 1.0, 1.0, sensitivity1, "one", "blue");
+			Boid b1 = new Boid(50, 50, 0.0, sensitivity1, "one", "");
+			Boid b2 = new Boid(80, 80, 0.0, sensitivity1, "one", "blue");
 			boids.add(b1);
 			boids.add(b2);
 			initialize.setPositionsSpecified(boids);
@@ -45,11 +45,11 @@ public class Testing {
 		
 		@Test
 		public void R2() throws IOException{
-			InitializeBoids initialize = new InitializeBoids("", 2, "one", 40);
+			InitializeBoids initialize = new InitializeBoids("", 2, "one", 40, false);
 			ArrayList<Boid> boids = new ArrayList<Boid>();
 			double[] sensitivity1 = {0,1,0,0,0};
-			Boid b1 = new Boid(50, 50, 0.0, 1.0, 1.0, sensitivity1, "one", "");
-			Boid b2 = new Boid(51, 51, 0.0, 1.0, 1.0, sensitivity1, "one", "blue");
+			Boid b1 = new Boid(50, 50, 0.0, sensitivity1, "one", "");
+			Boid b2 = new Boid(51, 51, 0.0, sensitivity1, "one", "blue");
 			boids.add(b1);
 			boids.add(b2);
 			initialize.setPositionsSpecified(boids);
@@ -64,11 +64,11 @@ public class Testing {
 
 		@Test
 		public void R3() throws IOException{
-			InitializeBoids initialize = new InitializeBoids("", 2, "one", 115);
+			InitializeBoids initialize = new InitializeBoids("", 2, "one", 115, false);
 			ArrayList<Boid> boids = new ArrayList<Boid>();
 			double[] sensitivity1 = {0,0,1,0,0};
-			Boid b1 = new Boid(50, 50, 0.0, 1.0, 1.0, sensitivity1, "one", "");
-			Boid b2 = new Boid(80, 80, 0.0, 1.0, 1.0, sensitivity1, "one", "blue");
+			Boid b1 = new Boid(50, 50, 0.0, sensitivity1, "one", "");
+			Boid b2 = new Boid(80, 80, 0.0, sensitivity1, "one", "blue");
 			boids.add(b1);
 			boids.add(b2);
 			initialize.setPositionsSpecified(boids);
@@ -81,11 +81,11 @@ public class Testing {
 		
 		@Test
 		public void R4() throws IOException{
-			InitializeBoids initialize = new InitializeBoids("", 2, "one", 37);
+			InitializeBoids initialize = new InitializeBoids("", 2, "one", 37, false);
 			ArrayList<Boid> boids = new ArrayList<Boid>();
 			double[] sensitivity1 = {0,0,0,1,0};
-			Boid b1 = new Boid(50, 50, 0.0, 1.0, 1.0, sensitivity1, "one", "");
-			Boid b2 = new Boid(51, 51, 0.0, 1.0, 1.0, sensitivity1, "one", "blue");
+			Boid b1 = new Boid(50, 50, 0.0, sensitivity1, "one", "");
+			Boid b2 = new Boid(51, 51, 0.0, sensitivity1, "one", "blue");
 			boids.add(b1);
 			boids.add(b2);
 			initialize.setPositionsSpecified(boids);
@@ -98,11 +98,11 @@ public class Testing {
 		
 		@Test
 		public void R5a() throws IOException{
-			InitializeBoids initialize = new InitializeBoids("", 2, "one", 70);
+			InitializeBoids initialize = new InitializeBoids("", 2, "one", 70, false);
 			ArrayList<Boid> boids = new ArrayList<Boid>();
 			double[] sensitivity1 = {0,0,0,0,1};
-			Boid b1 = new Boid(50, 50, 0.0, 1.0, 1.0, sensitivity1, "one", "");
-			Boid b2 = new Boid(80, 80, 0.0, 1.0, 1.0, sensitivity1, "one", "blue");
+			Boid b1 = new Boid(50, 50, 0.0, sensitivity1, "one", "");
+			Boid b2 = new Boid(80, 80, 0.0, sensitivity1, "one", "blue");
 			boids.add(b1);
 			boids.add(b2);
 			initialize.setPositionsSpecified(boids);
@@ -117,12 +117,12 @@ public class Testing {
 		
 		@Test
 		public void R5b() throws IOException{
-			InitializeBoids initialize = new InitializeBoids("", 3, "one", 15);
+			InitializeBoids initialize = new InitializeBoids("", 3, "one", 15, false);
 			ArrayList<Boid> boids = new ArrayList<Boid>();
 			double[] sensitivity1 = {0,0,0,0,1};
-			Boid b11 = new Boid(50, 50, 0.0, 1.0, 1.0, sensitivity1, "one", "");
-			Boid b21 = new Boid(80, 80, 0.0, 1.0, 1.0, sensitivity1, "one", "blue");
-			Boid b31 = new Boid(110, 110, 1.0, 1.0, 1.0, sensitivity1, "one", "blue");
+			Boid b11 = new Boid(50, 50, 0.0, sensitivity1, "one", "");
+			Boid b21 = new Boid(80, 80, 0.0, sensitivity1, "one", "blue");
+			Boid b31 = new Boid(110, 110, 1.0, sensitivity1, "one", "blue");
 			boids.add(b11);
 			boids.add(b21);
 			boids.add(b31);
@@ -137,10 +137,10 @@ public class Testing {
 			
 			boids.clear();
 			
-			InitializeBoids initialize2 = new InitializeBoids("", 3, "one", 15);
-			Boid b12 = new Boid(50, 50, 0.0, 1.0, 1.0, sensitivity1, "one", "");
-			Boid b22 = new Boid(80, 80, 0.0, 1.0, 1.0, sensitivity1, "one", "blue");
-			Boid b32 = new Boid(110, 110, 0.0, 1.0, 1.0, sensitivity1, "one", "blue");
+			InitializeBoids initialize2 = new InitializeBoids("", 3, "one", 15, false);
+			Boid b12 = new Boid(50, 50, 0.0, sensitivity1, "one", "");
+			Boid b22 = new Boid(80, 80, 0.0, sensitivity1, "one", "blue");
+			Boid b32 = new Boid(110, 110, 0.0, sensitivity1, "one", "blue");
 			boids.add(b12);
 			boids.add(b22);
 			boids.add(b32);
@@ -156,11 +156,11 @@ public class Testing {
 		
 		@Test
 		public void E() throws IOException{
-			InitializeBoids initialize = new InitializeBoids("", 2, "energy", 23);
+			InitializeBoids initialize = new InitializeBoids("", 2, "energy", 23, false);
 			ArrayList<Boid> boids = new ArrayList<Boid>();
 			double[] sensitivity1 = {1,1,1,1,1};
-			Boid b11 = new Boid(50, 50, 0.0, 1.0, 1.0, sensitivity1, "energy", "");
-			Boid b21 = new Boid(80, 80, 0.0, 1.0, 1.0, sensitivity1, "energy", "blue");
+			Boid b11 = new Boid(50, 50, 0.0, sensitivity1, "energy", "");
+			Boid b21 = new Boid(80, 80, 0.0, sensitivity1, "energy", "blue");
 			boids.add(b11);
 			boids.add(b21);
 			initialize.setPositionsSpecified(boids);
@@ -172,9 +172,9 @@ public class Testing {
 			
 			boids.clear();
 			
-			InitializeBoids initialize2 = new InitializeBoids("", 2, "energy", 99);
-			Boid b12 = new Boid(50, 50, 0.0, 1.0, 1.0, sensitivity1, "energy", "");
-			Boid b22 = new Boid(80, 80, 0.0, 1.0, 1.0, sensitivity1, "energy", "blue");
+			InitializeBoids initialize2 = new InitializeBoids("", 2, "energy", 99, false);
+			Boid b12 = new Boid(50, 50, 0.0, sensitivity1, "energy", "");
+			Boid b22 = new Boid(80, 80, 0.0, sensitivity1, "energy", "blue");
 			boids.add(b12);
 			boids.add(b22);
 			initialize2.setPositionsSpecified(boids);
@@ -186,9 +186,9 @@ public class Testing {
 			
 			boids.clear();
 			
-			InitializeBoids initialize3 = new InitializeBoids("", 2, "energy", 101);
-			Boid b13 = new Boid(50, 50, 0.0, 1.0, 1.0, sensitivity1, "energy", "");
-			Boid b23 = new Boid(80, 80, 0.0, 1.0, 1.0, sensitivity1, "energy", "blue");
+			InitializeBoids initialize3 = new InitializeBoids("", 2, "energy", 101, false);
+			Boid b13 = new Boid(50, 50, 0.0, sensitivity1, "energy", "");
+			Boid b23 = new Boid(80, 80, 0.0, sensitivity1, "energy", "blue");
 			boids.add(b13);
 			boids.add(b23);
 			initialize3.setPositionsSpecified(boids);
@@ -199,12 +199,12 @@ public class Testing {
 		
 		@Test
 		public void D() throws IOException{
-			InitializeBoids initialize = new InitializeBoids("", 3, "disease", 33);
+			InitializeBoids initialize = new InitializeBoids("", 3, "disease", 33, false);
 			ArrayList<Boid> boids = new ArrayList<Boid>();
 			double[] sensitivity1 = {1,1,1,0,1};
-			Boid b11 = new Boid(5, 5, 0.0, 1.0, 1.0, sensitivity1, "disease", "");
-			Boid b21 = new Boid(80, 80, 0.0, 1.0, 1.0, sensitivity1, "disease", "blue");
-			Boid b31 = new Boid(110, 110, 0.0, 1.0, 1.0, sensitivity1, "disease", "blue");
+			Boid b11 = new Boid(5, 5, 0.0, sensitivity1, "disease", "");
+			Boid b21 = new Boid(80, 80, 0.0, sensitivity1, "disease", "blue");
+			Boid b31 = new Boid(110, 110, 0.0, sensitivity1, "disease", "blue");
 			boids.add(b11);
 			boids.add(b21);
 			boids.add(b31);
@@ -216,10 +216,10 @@ public class Testing {
 			
 			boids.clear();
 			
-			InitializeBoids initialize2 = new InitializeBoids("", 3, "disease", 80);
-			Boid b12 = new Boid(5, 5, 0.0, 1.0, 1.0, sensitivity1, "disease", "");
-			Boid b22 = new Boid(80, 80, 0.0, 1.0, 1.0, sensitivity1, "disease", "blue");
-			Boid b32 = new Boid(110, 110, 0.0, 1.0, 1.0, sensitivity1, "disease", "blue");
+			InitializeBoids initialize2 = new InitializeBoids("", 3, "disease", 80, false);
+			Boid b12 = new Boid(5, 5, 0.0, sensitivity1, "disease", "");
+			Boid b22 = new Boid(80, 80, 0.0, sensitivity1, "disease", "blue");
+			Boid b32 = new Boid(110, 110, 0.0, sensitivity1, "disease", "blue");
 			boids.add(b12);
 			boids.add(b22);
 			boids.add(b32);

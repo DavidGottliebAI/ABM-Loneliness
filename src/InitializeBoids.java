@@ -3,6 +3,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
@@ -44,38 +46,50 @@ public class InitializeBoids implements Comparable<InitializeBoids>, Iterable<Bo
 	private static int boidDistance = 5;
 	private static int velBoundChg = 2;
 	private static int timeSteps = 1000;
-	private static int interactionDistance = 1000;
+	private static int interactionDistance = 10;
 	private static int maxConnections = 3;
-	private static int minGroupSize = 3;
 	private static int resourceDistance = 20;
-	private static int spreadDistance = 15;
+	private static int spreadDistance = 10;
 	private static double malaise = 1.5;
 	private JPanel buttonPanel;
 	private JButton startButton;
 	private int curTime = 0;
 	private String visualize;
 	private double[] predatorVec = {0, 0};
-	private double commonInterest = 0.1;
+	private int predatorDistance = 30;
 	private Fitness fitnessFunction = new Fitness(fitnessType, dimEnvironmentX, dimEnvironmentY);
+	private boolean loneliness;
+	public ArrayList<Hill> hills;
+	public ArrayList<int[]> initialPositions;
+	public String experimentName;
+	public double bigSum;
 	
-	public InitializeBoids(ArrayList<Boid> boids, int seed) {
+	public InitializeBoids(ArrayList<Boid> boids, int seed, boolean loneliness, 
+			ArrayList<Hill> hills, ArrayList<int[]> initialPositions, String experimentName) {
 		this.numBoids = boids.size();
 		fitnessType = boids.get(0).fitnessType;
 		totalFitness = 0;
+		this.loneliness = loneliness;
+		this.hills = hills;
+		this.initialPositions = initialPositions;
+		this.experimentName = experimentName;
 		
 		for(int i = 0; i < boids.size(); i++) {
-//			this.frame = new JFrame();
-//			this.frame.setSize(dimEnvironment * 5, dimEnvironment * 5);
 			
-			double[] sensitivity = new double[5];
+			double[] sensitivity = new double[6];
+			double[] defaultBehavior = new double[6];
 			for(int j = 0; j < boids.get(i).getSensitivity().size(); j++) {
 				sensitivity[j] = boids.get(i).getSensitivity().get(j);
 			}
+			for(int j = 0; j < boids.get(i).getDefaultBehavior().size(); j++) {
+				defaultBehavior[j] = boids.get(i).getDefaultBehavior().get(j);
+			}
 			double fitness = boids.get(i).getFitness();
+			double expected = boids.get(i).getExpected();
 			
-			Random random = MyRandom.getInstanceOfRandom();
-//			Boid newBoid = (i==0) ? new Boid(50, 100, 1, 0, 1, sensitivity, "one", "black") : new Boid(150, 100, 1, 0, 1, sensitivity, "one", "black");
-			Boid newBoid = new Boid(random.nextInt(200), random.nextInt(200), 0.0, 0.0, 0.0, sensitivity, "one", "black");
+//			Random random = MyRandom.getInstanceOfRandom();
+			Boid newBoid = new Boid(initialPositions.get(i)[0], initialPositions.get(i)[1], expected, defaultBehavior, sensitivity, "one", "black");
+//			Boid newBoid = new Boid(random.nextInt(200), random.nextInt(200), 0.0, sensitivity, "one", "black");
 			newBoid.setFitness(fitness);
 			this.boids.add(newBoid);
 		}
@@ -87,14 +101,23 @@ public class InitializeBoids implements Comparable<InitializeBoids>, Iterable<Bo
 	
 	/**
 	 * InitializeBoids: Initialize constructor
+	 * @param positions 
+	 * @param hills 
+	 * @param experimentName 
 	 */
-	public InitializeBoids(String visualize, int numBoids, String fitnessType, int timeSteps) {
+	public InitializeBoids(String visualize, int numBoids, String fitnessType, int timeSteps, 
+			boolean loneliness, ArrayList<Hill> hills, ArrayList<int[]> initialPositions, String experimentName) {
 		this.timeSteps = timeSteps;
 		this.numBoids = numBoids;
 		this.fitnessType = fitnessType;
 		this.visualize = visualize;
+		this.loneliness = loneliness;
+		this.hills = hills;
+		this.initialPositions = initialPositions;
+		this.experimentName = experimentName;
 		
 		if(visualize.equals("viz")) {
+			MyRandom.intializeRandom(0);
 			this.frame = new JFrame();
 			this.frame.setSize(dimEnvironmentX * 5, dimEnvironmentY * 5);
 			this.frame.setTitle("Boids!");
@@ -111,6 +134,16 @@ public class InitializeBoids implements Comparable<InitializeBoids>, Iterable<Bo
 	               // TODO: earthquake
 	            }
 	        });
+			
+			frame.addMouseListener(new MouseAdapter() {// provides empty implementation of all
+                // MouseListener`s methods, allowing us to
+                // override only those which interests us
+			@Override //I override only one method for presentation
+			public void mousePressed(MouseEvent e) {
+			System.out.println(e.getX() / 5 + "," + e.getY() / 5);
+			}
+			});
+			
 			this.frame.addMouseListener(new mouseListener(this.frame));
 			this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			
@@ -126,10 +159,10 @@ public class InitializeBoids implements Comparable<InitializeBoids>, Iterable<Bo
 		this.fitnessData = new double[numBoids][timeSteps];
 		
 		if(visualize.equals("viz")) {
-			MyRandom.intializeRandom(1);
+//			MyRandom.intializeRandom(1);
 			if(fitnessType == "predator") {
-				Random random = MyRandom.getInstanceOfRandom();
-				predator = new Predator(random.nextInt(200), random.nextInt(200), boids);
+//				Random random = MyRandom.getInstanceOfRandom();
+				predator = new Predator(100, 100, boids);
 			}
 			Timer t = new Timer(100, new ActionListener() {
 
@@ -175,6 +208,12 @@ public class InitializeBoids implements Comparable<InitializeBoids>, Iterable<Bo
 							popData[i][2][curTime] = boids.get(i).getFitness();
 						}
 						
+						for(int k = 0; k < boids.size(); k++) {
+							bigSum += boids.get(k).getFitness();
+//							System.out.println(bigSum);
+							fitnessData[k][curTime] = boids.get(k).getFitness();
+						}
+						
 						
 						for(int i = 0; i < 6; i++) {
 							visualizer.update(numBoids, boids, i);
@@ -186,32 +225,23 @@ public class InitializeBoids implements Comparable<InitializeBoids>, Iterable<Bo
 						if(curTime >= timeSteps) {
 							simulationRunning = false;
 							calculateTotalFitness();
-							
+//							System.out.println(totalFitness);
 							return;
 						}
 					}
 				}
 
-//				private void spread(Boid boid) {
-//					for(Boid b : boids) {
-//						Random random = MyRandom.getInstanceOfRandom();
-//						if(b != boid && distanceBetween(boid.position, b.position) < spreadDistance && random.nextDouble() < diseaseSpreadChance) {
-//							System.out.println("diseased");
-//							b.hasDisease = true;
-//						}
-//					}
-//				}
 			});
 			t.start();
 		}
 	}
 	
 	public void runSim() throws IOException {
-		MyRandom.intializeRandom(1);
+//		MyRandom.getInstanceOfRandom();
 		if(fitnessType == "predator") {
-			Random random = MyRandom.getInstanceOfRandom();
-			predator = new Predator(random.nextInt(200), random.nextInt(200), boids);
-		}
+//			
+			predator = new Predator(100, 100, boids);
+		} 
 		
 		for(int i = 0; i < timeSteps; i++) {
 			if(simulationRunning) {
@@ -252,15 +282,18 @@ public class InitializeBoids implements Comparable<InitializeBoids>, Iterable<Bo
 						boids.get(k).removeConnections();
 						boids.remove(boids.get(k));
 						numBoids--;
-						if(numBoids == 1) {
+						if(numBoids == 0) {
 							curTime = 0;
 							calculateTotalFitness();
+//							System.out.println(totalFitness);
 							return;
 						}
 					}
 				}
 				
 				for(int k = 0; k < numBoids; k++) {
+					bigSum += boids.get(k).getFitness();
+//					System.out.println(bigSum);
 					fitnessData[k][curTime] = boids.get(k).getFitness();
 				}
 				curTime++;
@@ -291,9 +324,11 @@ public class InitializeBoids implements Comparable<InitializeBoids>, Iterable<Bo
 			for(int j = 0; j < timeSteps; j++) {
 				sum += fitnessData[i][j];
 			}
+//			System.out.println(boids.get(i).getColor() + " :" + sum);
 //			sum /= timeSteps;
 			totalSum += sum;
 		}
+//		System.out.println(totalSum);
 		totalFitness = totalSum;
 	}
 	
@@ -337,13 +372,11 @@ public class InitializeBoids implements Comparable<InitializeBoids>, Iterable<Bo
 	
 	public void update() {
 		for(Boid b : boids) {
-
 			
-			this.fitnessFunction.calculateFitness(b);
-			if(fitnessType.equals("energy")) this.fitnessFunction.calculateFitness(b, boids, curTime, resourceLocation);
-			
+			this.fitnessFunction.calculateFitness(b, hills);
 			
 			if(fitnessType.equals("energy")) {
+				this.fitnessFunction.calculateFitness(b, boids, curTime, resourceLocation);
 				if(distanceBetween(b.getPosition(), resourceLocation) > resourceDistance) {
 					b.energy -= 0.001;
 				} else {
@@ -353,10 +386,12 @@ public class InitializeBoids implements Comparable<InitializeBoids>, Iterable<Bo
 					b.toRemove = true;
 				}
 			} else if(fitnessType.equals("predator")) {
-				predatorVec[0] = (distanceBetween(predator.position, b.position) < 30) ? (-predator.position[0] + b.position[0]) / 3 : 0;
-				predatorVec[1] = (distanceBetween(predator.position, b.position) < 30) ? (-predator.position[1] + b.position[1]) / 3 : 0;
+				predatorVec[0] = (distanceBetween(predator.position, b.position) < predatorDistance) 
+						? (b.position[0] - predator.position[0]) / 3 : 0;
+				predatorVec[1] = (distanceBetween(predator.position, b.position) < predatorDistance) 
+						? (b.position[1] - predator.position[1]) / 3 : 0;
 				predator.update();
-			}
+			} 
 		
 			if(b.getFitness() > b.getBestFitness()) {
 				b.setBestFitness(b.getFitness());
@@ -370,17 +405,51 @@ public class InitializeBoids implements Comparable<InitializeBoids>, Iterable<Bo
 			double[] v4 = rule4(b);
 			double[] v5 = rule5(b);
 			
-			double[][] ruleset = new double[][] { {v1[0], v1[1]}, {v2[0], v2[1]}, {v3[0], v3[1]}, {v4[0], v4[1]}, {v5[0], v5[1]} };
+			double[][] ruleset = new double[][] {{v1[0], v1[1]},
+												 {v2[0], v2[1]},
+												 {v3[0], v3[1]},
+												 {v4[0], v4[1]},
+												 {v5[0], v5[1]}};
+
 			b.setRules(ruleset);
 			
 			// Keep boids within lines
 			boundPosition(b);
 			
 			// TODO: ADD BACK LONELINESS COEFFICIENT
-			b.velocity[0] += (b.getSensitivity().get(0) * v1[0] + b.getSensitivity().get(1) * v2[0] + b.getSensitivity().get(2) * v3[0] 
-					+ b.getSensitivity().get(3) * v4[0] + b.getSensitivity().get(4) * v5[0]) + predatorVec[0];
-			b.velocity[1] += (b.getSensitivity().get(0) * v1[1] + b.getSensitivity().get(1) * v2[1] + b.getSensitivity().get(2) * v3[1] 
-					+ b.getSensitivity().get(3) * v4[1] + b.getSensitivity().get(4) * v5[1]) + predatorVec[1];
+			if(b.getSocialPercieved() < b.getSocialExpected() && loneliness) {
+				b.calculateLoneliness();
+//				System.out.println("lone: " + b.getColor() + ": " + b.getSocialPercieved() + ": " + b.getSocialExpected());
+				double lonelyValue = b.getLoneliness();
+				
+				b.velocity[0] += (b.getSensitivity().get(0) * v1[0]
+								+ b.getSensitivity().get(1) * v2[0] 
+								+ b.getSensitivity().get(2) * v3[0] 
+								+ b.getSensitivity().get(3) * v4[0] 
+								+ b.getSensitivity().get(4) * v5[0]
+								+ b.getSensitivity().get(5) * predatorVec[0]) * (1 + lonelyValue);
+		
+				b.velocity[1] += (b.getSensitivity().get(0) * v1[1]
+								+ b.getSensitivity().get(1) * v2[1] 
+								+ b.getSensitivity().get(2) * v3[1] 
+								+ b.getSensitivity().get(3) * v4[1] 
+								+ b.getSensitivity().get(4) * v5[1]
+								+ b.getSensitivity().get(5) * predatorVec[1]) * (1 + lonelyValue);
+			} else {
+				b.velocity[0] += b.getDefaultBehavior().get(0) * v1[0]
+							   + b.getDefaultBehavior().get(1) * v2[0] 
+							   + b.getDefaultBehavior().get(2) * v3[0] 
+							   + b.getDefaultBehavior().get(3) * v4[0] 
+							   + b.getDefaultBehavior().get(4) * v5[0]
+							   + b.getDefaultBehavior().get(5) * predatorVec[0];
+
+				b.velocity[1] += b.getDefaultBehavior().get(0) * v1[1]
+							   + b.getDefaultBehavior().get(1) * v2[1] 
+							   + b.getDefaultBehavior().get(2) * v3[1] 
+							   + b.getDefaultBehavior().get(3) * v4[1] 
+						       + b.getDefaultBehavior().get(4) * v5[1]
+						       + b.getDefaultBehavior().get(5) * predatorVec[1];
+			}
 			
 			// Restrict oscillations
 			
@@ -421,7 +490,7 @@ public class InitializeBoids implements Comparable<InitializeBoids>, Iterable<Bo
 				b.toKill = true;
 			}
 //			
-			b.perceivedIsolation();
+			b.perceivedIsolation(1);
 			
 		}
 	}
@@ -599,37 +668,49 @@ public class InitializeBoids implements Comparable<InitializeBoids>, Iterable<Bo
 	}
 	
 	private void interaction(Boid boid) {
-		Random random =  MyRandom.getInstanceOfRandom();
 		for(Boid b : boids) {
 			if(!boid.equals(b)) {
-				// if proper distance apart AND within interaction percentage AND connection doesn't already exist THEN form connection
-				if(distanceBetween(boid.getPosition(), b.getPosition()) < interactionDistance && random.nextDouble() * 2 < boid.getInteractionChance() 
-						&& !boid.getConnections().containsKey(b) && boid.getConnectionList().size() < maxConnections
-						&& b.getConnectionList().size() < maxConnections && Math.abs(boid.mutualInterest - b.mutualInterest) < commonInterest ) {
-					addConnection(boid, b, 1);
-					boid.mutualInterest(b);
-					b.mutualInterest(boid);
-				} 
-				// otherwise, strengthen connection
-				else if(distanceBetween(boid.getPosition(), b.getPosition()) < interactionDistance && random.nextDouble() * 2 < boid.getInteractionChance() 
-						&& boid.getConnections() != null && boid.getConnections().containsKey(b)) {
-					strengthenConnection(boid, b);
-					boid.mutualInterest(b);
-					b.mutualInterest(boid);
+				// if proper distance apart AND connection doesn't already exist THEN form connection
+//				if(distanceBetween(boid.getPosition(), b.getPosition()) < interactionDistance 
+//						&& !boid.getConnections().containsKey(b) && boid.getConnectionList().size() < maxConnections
+//						&& b.getConnectionList().size() < maxConnections) {
+//					addConnection(boid, b);
+//					boid.perceivedSocialization();
+//					b.perceivedSocialization();
+//				} 
+//				// otherwise, strengthen connection
+//				else if(distanceBetween(boid.getPosition(), b.getPosition()) < interactionDistance 
+//						&& boid.getConnections() != null && boid.getConnections().containsKey(b)) {
+//					boid.perceivedSocialization();
+//					b.perceivedSocialization();
+//				}
+				
+				if(distanceBetween(boid.getPosition(), b.getPosition()) < interactionDistance) {
+					boid.perceivedSocialization();
+					b.perceivedSocialization();
+					Random random = MyRandom.getInstanceOfRandom();
+					if(!boid.getConnections().containsKey(b) 
+						&& boid.getConnectionList().size() < maxConnections
+						&& b.getConnectionList().size() < maxConnections 
+						&& random.nextDouble() < boid.getConnectionChance()) {
+						addConnection(boid, b);
+					}
 				}
+					
+				
 			}
 		}
 	}
 	
 	
-	private void strengthenConnection(Boid boid, Boid b) {
-		boid.strengthenConnection(b);
-		b.strengthenConnection(boid);	
-	}
+//	private void strengthenConnection(Boid boid, Boid b) {
+//		boid.strengthenConnection(b);
+//		b.strengthenConnection(boid);	
+//	}
 
-	private void addConnection(Boid boid, Boid b, double strength) {
-		boid.addConnection(b, strength);
-		b.addConnection(boid, strength);
+	private void addConnection(Boid boid, Boid b) {
+		boid.addConnection(b);
+		b.addConnection(boid);
 	}
 	
 	/**
@@ -639,29 +720,29 @@ public class InitializeBoids implements Comparable<InitializeBoids>, Iterable<Bo
 	 * 
 	 */
 	
-	private void membership(Boid boid) {
-		ArrayList<Boid> members = new ArrayList<>();
-		for(Boid friend : boid.getConnectionList()) {
-			for(Boid mutual : friend.getConnectionList()) {
-				if(boid.getConnectionList().contains(mutual) && !members.contains(mutual)) {
-					members.add(mutual);
-				}
-			}
-			if(!members.contains(friend)) {
-				members.add(friend);
-			}
-		}
-		members.add(boid);
-		if(members.size() >= minGroupSize) {
-			boid.addGroup(members, 1);
-			for(Boid b : members) {
-				boid.mutualInterest(b);
-			}
-		}
-	}
+//	private void membership(Boid boid) {
+//		ArrayList<Boid> members = new ArrayList<>();
+//		for(Boid friend : boid.getConnectionList()) {
+//			for(Boid mutual : friend.getConnectionList()) {
+//				if(boid.getConnectionList().contains(mutual) && !members.contains(mutual)) {
+//					members.add(mutual);
+//				}
+//			}
+//			if(!members.contains(friend)) {
+//				members.add(friend);
+//			}
+//		}
+//		members.add(boid);
+//		if(members.size() >= minGroupSize) {
+//			boid.addGroup(members, 1);
+//			for(Boid b : members) {
+//				boid.mutualInterest(b);
+//			}
+//		}
+//	}
 	
 	public void writeToCSV(double[][][] arr, String filename) throws IOException {
-		PrintWriter pw = new PrintWriter(new File("C:\\Users\\gottlijd\\Desktop\\ABML\\src\\pos_csv\\" + filename));
+		PrintWriter pw = new PrintWriter(new File("C:\\Users\\gottlijd\\Desktop\\ABML\\src\\" + experimentName + "\\pos_csv\\" + filename));
 		StringBuilder sb = new StringBuilder();
 		
 		sb.append("t,");

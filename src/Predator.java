@@ -83,7 +83,11 @@ public class Predator {
 				bestDistance = distance;
 				closestBoid = b;
 			}
+			if(closestBoid == null) {
+				int i = 0;
+			}
 		}
+		
 		return closestBoid;
 	}
 

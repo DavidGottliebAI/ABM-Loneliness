@@ -1,4 +1,5 @@
 
+import java.awt.Component;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
@@ -13,10 +14,9 @@ public class Boid {
 	 * Hyperparameters
 	 */
 	private static int initialVelocity = 3;
-	private static double connectionStrength = 1.0;
-	private static double socializationFactor = 0.05;
-	private static double desocializationFactor = -0.01;
-	private static double interestDifference = 0.1;
+	private static double socializationFactor = 0.1;
+	private static double desocializationFactor = -0.02;
+	private static double maxSocial = 2;
 	
 	/**
 	 * Public parameters
@@ -27,8 +27,9 @@ public class Boid {
 	public double energy = 1.0;
 	public boolean hasDisease = false;
 	public boolean toRemove = false;
-	public int lifespan = 100;
-	public int diseaseResistance = 50;
+	public int lifespan = 50;
+	public int diseaseResistance = 40;
+	private int lossEffect = 100;
 	
 	/**
 	 * Private parameters: 
@@ -40,17 +41,16 @@ public class Boid {
 	 * @sensitivity: how much an agent is affected by loneliness
 	 */
 	private double[] bestPosition;
-	private double socialExpected;
-	public double socialPerceived = 1.0;
-	private double interactionChance;
-	public double mutualInterest;
-	private double personality; // phase this out
+	private double socialExpected = 1.0;
+	public double socialPerceived = maxSocial;
+	private double connectionChance = 0.05;
 	private double loneliness;
 	private double fitness = 0;
 	private double bestFitness;
 	private double[][] rules = new double[4][2];
 	
 	private ArrayList<Double> sensitivity = new ArrayList<Double>();
+	private ArrayList<Double> defaultBehavior = new ArrayList<Double>();
 	private HashMap<Boid, Double> connections = new HashMap<Boid, Double>();
 	private ArrayList<Boid> connectionList = new  ArrayList<Boid>();
 	private HashMap<ArrayList<Boid>, Double> groups = new HashMap<ArrayList<Boid>, Double>();
@@ -77,9 +77,10 @@ public class Boid {
 //	
 	/**
 	 * Boid: Boid constructor
+	 * @param sensitivity 
 	 * @params: x, y, mutualInterest, socialExpected, interactionChance, sensitivity, fitness, color
 	 */
-	public Boid(int x, int y, double mutualInterest, double socialExpected, double interactionChance, double[] sensitivity, String fitness, String color) {
+	public Boid(int x, int y, double socialExpected, double[] defaultBehavior, double[] sensitivity, String fitness, String color) {
 		this.color = color;
 		this.position[0] = x;
 		this.position[1] = y;
@@ -88,10 +89,9 @@ public class Boid {
 		this.bestPosition[1] = y;
 		this.fitnessType = fitness;
 		this.bestFitness = Double.NEGATIVE_INFINITY;
-		this.mutualInterest = mutualInterest;
 		this.socialExpected = socialExpected;
-		this.interactionChance = interactionChance;
 		for(int i = 0; i < sensitivity.length; i++) this.sensitivity.add(sensitivity[i]);
+		for(int i = 0; i < defaultBehavior.length; i++) this.defaultBehavior.add(defaultBehavior[i]);
 	}
 	
 //	@Override
@@ -103,8 +103,8 @@ public class Boid {
 	 * addConnection: add connection between two agents
 	 * @params: boid, strength
 	 */
-	public void addConnection(Boid boid, double strength) {
-		this.connections.put(boid, strength);
+	public void addConnection(Boid boid) {
+//		this.connections.put(boid);
 		this.connectionList.add(boid);
 	}
 	
@@ -112,13 +112,14 @@ public class Boid {
 	 * strengthenConnection: strengthen connection between two agents
 	 * @params: boid
 	 */
-	public void strengthenConnection(Boid b) {
-		this.connections.put(b, connections.get(b) + connectionStrength);
-	}
+//	public void strengthenConnection(Boid b) {
+//		this.connections.put(b, connections.get(b) + connectionStrength);
+//	}
 	
 	public void removeConnections() {
 		for(Boid b : connectionList) {
 			b.connectionList.remove(this);
+			b.perceivedIsolation(lossEffect);
 		}
 	}
 	
@@ -135,28 +136,33 @@ public class Boid {
 	 */
 	public void perceivedSocialization() {
 		this.socialPerceived += socializationFactor;
+		if(this.socialPerceived > maxSocial) {
+			this.socialPerceived = maxSocial;
+		}
 	}
 	
 	/**
 	 * perceivedSocialization: adjust an agent's perceived social interaction negatively
+	 * @param effect 
 	 */
-	public void perceivedIsolation() {
-		this.socialPerceived += desocializationFactor;
+	public void perceivedIsolation(int effect) {
+		this.socialPerceived += effect * desocializationFactor;
+		if(this.socialPerceived < -maxSocial) {
+			this.socialPerceived = -maxSocial;
+		}
 	}
 	
 	/**
 	 * mutualInterest: calculate if two agents are compatible in respect to common interest
 	 */
-	public void mutualInterest(Boid b) {
-		if(this.mutualInterest - b.mutualInterest < interestDifference) {
-			this.perceivedSocialization();
-		}
-	}
+//	public void mutualInterest(Boid b) {
+//		if(this.mutualInterest - b.mutualInterest < interestDifference) {
+//			this.perceivedSocialization();
+//		}
+//	}
 	
-	/**
-	 * mutualInterest: calculate loneliness of an agent
-	 */
-	public void loneliness() {
+
+	public void calculateLoneliness() {
 		this.loneliness = this.socialExpected - this.socialPerceived;
 	}
 	
@@ -204,13 +210,13 @@ public class Boid {
 		return this.sensitivity;
 	}
 
-	public double getInteractionChance() {
-		return this.interactionChance;
+	public double getConnectionChance() {
+		return this.connectionChance;
 	}
 
-	public double getInterest() {
-		return this.mutualInterest;
-	}
+//	public double getInterest() {
+//		return this.mutualInterest;
+//	}
 
 	public double getSocialExpected() {
 		return this.socialExpected;
@@ -250,16 +256,16 @@ public class Boid {
 		this.bestPosition[1] = position[1];
 	}
 
-	public void setInterest(double newInterest) {
-		this.mutualInterest = newInterest;
-	}
+//	public void setInterest(double newInterest) {
+//		this.mutualInterest = newInterest;
+//	}
 
 	public void setExpected(double newExpected) {
 		this.socialExpected = newExpected;
 	}
 
 	public void setInteractChance(double newInteractionChance) {
-		this.interactionChance = newInteractionChance;
+		this.connectionChance = newInteractionChance;
 	}
 
 	public void setSensitivity(int index, double value) {
@@ -273,5 +279,13 @@ public class Boid {
 	public void setPosition(int newX, int newY) {
 		double[] newPos = {newX, newY};
 		this.position = newPos;
+	}
+
+	public ArrayList<Double> getDefaultBehavior() {
+		return this.defaultBehavior;
+	}
+
+	public double getSocialPercieved() {
+		return this.socialPerceived;
 	}
 }
