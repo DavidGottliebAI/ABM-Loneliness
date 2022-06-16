@@ -469,9 +469,9 @@ public class InitializeBoids implements Comparable<InitializeBoids>, Iterable<Bo
 			b.position[0] += b.velocity[0];
 			b.position[1] += b.velocity[1];
 
-			if (b.position[0] > dimEnvironmentX + 50 || b.position[1] > dimEnvironmentY + 50) {
-				b.toRemove = true;
-			}
+//			if (b.position[0] > dimEnvironmentX + 50 || b.position[1] > dimEnvironmentY + 50) {
+//				b.toRemove = true;
+//			}
 
 			interaction(b);
 

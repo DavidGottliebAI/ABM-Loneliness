@@ -63,9 +63,10 @@ public class BoidPopulation {
 				boidsPopulation.add(b);
 			}
 
+			// Create population of alterate initial groups positions
 			ArrayList<InitializeBoids> boidsAlternates = new ArrayList<InitializeBoids>();
 			int offset = 1;
-			for (int k = 0; k < populationSize-1; k++) {
+			for (int k = 0; k < populationSize - 1; k++) {
 				InitializeBoids boidsInitialAlternate = new InitializeBoids("", populationSize, fitness, 1000,
 						this.loneliness, hills, initialPositions, experimentName);
 				boidsInitialAlternate.setBoidSize(populationSize);
@@ -82,20 +83,21 @@ public class BoidPopulation {
 					Boid b = new Boid(boidsInitialAlternate.initialPositions.get(init)[0],
 							boidsInitialAlternate.initialPositions.get(init)[1], 0.0, defaultBehavior, sensitivity,
 							"one", "black");
+					// set each to allBoids values instead of random
 					if (genome[0])
-						b.setExpected(random.nextDouble());
+						b.setExpected(boidsPopulation.get(j).getExpected());
 					if (genome[1])
-						b.setSensitivity(0, random.nextDouble() * 2 - 1);
+						b.setSensitivity(0, boidsPopulation.get(j).getSensitivity().get(0));
 					if (genome[2])
-						b.setSensitivity(1, random.nextDouble() * 2 - 1);
+						b.setSensitivity(1, boidsPopulation.get(j).getSensitivity().get(1));
 					if (genome[3])
-						b.setSensitivity(2, random.nextDouble() * 2 - 1);
+						b.setSensitivity(2, boidsPopulation.get(j).getSensitivity().get(2));
 					if (genome[4])
-						b.setSensitivity(3, random.nextDouble() * 2 - 1);
+						b.setSensitivity(3, boidsPopulation.get(j).getSensitivity().get(3));
 					if (genome[5])
-						b.setSensitivity(4, random.nextDouble() * 2 - 1);
+						b.setSensitivity(4, boidsPopulation.get(j).getSensitivity().get(4));
 					if (genome[6])
-						b.setSensitivity(5, random.nextDouble() * 2 - 1);
+						b.setSensitivity(5, boidsPopulation.get(j).getSensitivity().get(5));
 					boidsPopulationAlternate.add(b);
 				}
 				offset++;
@@ -177,7 +179,14 @@ public class BoidPopulation {
 			}
 
 			for (int j = 0; j < metaPopulationSize; j++) {
+				for (int i = 0; i < populationSize - 1; i++) {
+					generalizedBoids.get(k).get(i).runSim();
+				}
 				allBoids.get(j).runSim();
+				// Add fitnesses of other combinations of starting positions
+				for (int r = 0; r < populationSize - 1; r++) {
+					allBoids.get(j).totalFitness += generalizedBoids.get(k).get(r).totalFitness;
+				}
 			}
 
 			if (k == generations - 1) {
@@ -195,6 +204,27 @@ public class BoidPopulation {
 			repopulate(seed);
 
 			mutate(genome, seed);
+
+			updateGeneralBoids();
+		}
+	}
+
+	private void updateGeneralBoids() {
+		// Update general boids
+		for (int i = 0; i < metaPopulationSize; i++) {
+			for (int j = 0; j < populationSize - 1; j++) {
+				for (int k = 0; k < populationSize; k++) {
+					Boid b = allBoids.get(i).getBoids().get(k);
+					Boid gb = generalizedBoids.get(i).get(j).getBoids().get(k);
+					gb.setExpected(b.getExpected());
+					gb.setSensitivity(0, b.getSensitivity().get(0));
+					gb.setSensitivity(1, b.getSensitivity().get(1));
+					gb.setSensitivity(2, b.getSensitivity().get(2));
+					gb.setSensitivity(3, b.getSensitivity().get(3));
+					gb.setSensitivity(4, b.getSensitivity().get(4));
+					gb.setSensitivity(5, b.getSensitivity().get(5));
+				}
+			}
 		}
 	}
 
@@ -204,6 +234,7 @@ public class BoidPopulation {
 				boidPopulation.boids.addAll(boidPopulation.deadBoids);
 			}
 		}
+
 	}
 
 	public InitializeBoids deepCopy(InitializeBoids population, int seed) {
@@ -229,6 +260,7 @@ public class BoidPopulation {
 		for (int i = 0; i < repopulatedBoids.size(); i++) {
 			allBoids.add(repopulatedBoids.get(i));
 		}
+
 	}
 
 	private void select() {
@@ -257,6 +289,7 @@ public class BoidPopulation {
 					b.setSensitivity(4, dist.calculateDistibutionValue(b.getSensitivity().get(4), 0.1));
 			}
 		}
+
 	}
 
 	public void writeToCSV(double[][][][] arr, String filename) throws IOException {

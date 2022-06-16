@@ -6,14 +6,12 @@ public class MainBoid {
 
 	public static void main(String[] args) throws IOException {
 
-		// TODO: Recheck fitness values
-		// TODO: Make sure expected value does not run away
-		// TODO: Add sensitivity to the default behavior
-		// TODO: Take sensitivity of agent from data of best generation and viz
-		// TODO: Add GUI to change parameters for ease of tweaking parameters
-
-		Distribution dist = new Distribution();
-		System.out.println(dist.calculateDistibutionValue(1, 0.1));
+		Boid b = new Boid(0, 0, 1, new double[] { 1, 1, 1, 1, 1, 1, 1 }, new double[] { -1, -1, -1, -1, -1, -1 }, "one",
+				"black");
+		Boid bg = b;
+		System.out.println(b.getExpected());
+		bg.setExpected(0);
+		System.out.println(b.getExpected());
 
 		ArrayList<Boid> boids = new ArrayList<Boid>();
 
