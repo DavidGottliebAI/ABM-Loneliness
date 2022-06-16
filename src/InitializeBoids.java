@@ -469,9 +469,16 @@ public class InitializeBoids implements Comparable<InitializeBoids>, Iterable<Bo
 			b.position[0] += b.velocity[0];
 			b.position[1] += b.velocity[1];
 
-//			if (b.position[0] > dimEnvironmentX + 50 || b.position[1] > dimEnvironmentY + 50) {
-//				b.toRemove = true;
-//			}
+			if (b.position[0] > dimEnvironmentX) {
+				b.position[0] = 0;
+			} else if (b.position[0] < 0) {
+				b.position[0] = dimEnvironmentX;
+			}
+			if (b.position[1] > dimEnvironmentY) {
+				b.position[1] = 0;
+			} else if (b.position[1] < 0) {
+				b.position[1] = dimEnvironmentY;
+			}
 
 			interaction(b);
 
@@ -482,6 +489,7 @@ public class InitializeBoids implements Comparable<InitializeBoids>, Iterable<Bo
 			b.perceivedIsolation(1);
 
 		}
+
 	}
 
 	// Closer the connections the less likely to interact

@@ -1,9 +1,8 @@
-import java.util.ArrayList;
 import java.util.Random;
 
 public class Distribution {
 
-	public static double calculateDistibutionValue(double mean, double std) {
+	public double calculateDistibutionValue(double mean, double std) {
 		Random random = MyRandom.getInstanceOfRandom();
 		double value = random.nextGaussian() * std + mean;
 		if (value > 1)
@@ -13,7 +12,7 @@ public class Distribution {
 		return value;
 	}
 
-	public static double[] calculateMeanAndStd(double[] distribution) {
+	public double[] calculateMeanAndStd(double[] distribution) {
 
 		double[] meanAndStd = new double[2];
 		double n = distribution.length, mean;

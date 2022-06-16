@@ -21,7 +21,6 @@ public class BoidPopulation {
 	public double[][][][] genData;
 	public double[][] boxData;
 	private int metaPopulationSize;
-	private String fitness;
 	private boolean loneliness;
 	private String experimentName;
 	private boolean generalize;
@@ -29,7 +28,6 @@ public class BoidPopulation {
 	public BoidPopulation(int seed, boolean[] genome, String fitness, int populationSize, int metaPopulationSize,
 			boolean loneliness, boolean generalize, ArrayList<Hill> hills, ArrayList<int[]> initialPositions,
 			String experimentName) throws IOException {
-		this.fitness = fitness;
 		this.populationSize = populationSize;
 		this.metaPopulationSize = metaPopulationSize;
 		this.loneliness = loneliness;
