@@ -64,7 +64,7 @@ public class BoidPopulation {
 			}
 
 			// Create population of alterate initial groups positions
-			if (this.generalize) {
+			if (generalize) {
 				ArrayList<InitializeBoids> boidsAlternates = new ArrayList<InitializeBoids>();
 				int offset = 1;
 				for (int k = 0; k < populationSize - 1; k++) {
@@ -126,6 +126,28 @@ public class BoidPopulation {
 	public void evolutionLoop(boolean[] genome, int seed) throws IOException {
 		for (int k = 0; k < generations; k++) {
 
+			for (int j = 0; j < metaPopulationSize; j++) {
+
+				allBoids.get(j).runSim();
+				// Add fitnesses of other combinations of starting positions
+				if (this.generalize) {
+					for (int i = 0; i < populationSize - 1; i++) {
+						generalizedBoids.get(j).get(i).runSim();
+					}
+					for (int i = 0; i < populationSize - 1; i++) {
+						allBoids.get(j).totalFitness += generalizedBoids.get(j).get(i).totalFitness;
+					}
+				}
+			}
+
+			if (k == generations - 1) {
+				for (int i = 0; i < allBoids.size(); i++) {
+					allBoids.get(i).writeToCSV(allBoids.get(i).popData, "pos_graph" + i + ".csv");
+				}
+			}
+
+			Collections.sort(allBoids);
+
 			// Collecting the worst data
 			for (int i = 0; i < populationSize; i++) {
 				genData[0][i][0][k] = allBoids.get(0).boids.get(i).getSensitivity().get(0);
@@ -176,28 +198,6 @@ public class BoidPopulation {
 				genData[2][i][6][k] = allBoids.get(allBoids.size() - 1).boids.get(i).getExpected();
 				genData[2][i][7][k] = allBoids.get(allBoids.size() - 1).totalFitness;
 			}
-
-			for (int j = 0; j < metaPopulationSize; j++) {
-
-				allBoids.get(j).runSim();
-				// Add fitnesses of other combinations of starting positions
-				if (this.generalize) {
-					for (int i = 0; i < populationSize - 1; i++) {
-						generalizedBoids.get(k).get(i).runSim();
-					}
-					for (int r = 0; r < populationSize - 1; r++) {
-						allBoids.get(j).totalFitness += generalizedBoids.get(k).get(r).totalFitness;
-					}
-				}
-			}
-
-			if (k == generations - 1) {
-				for (int i = 0; i < allBoids.size(); i++) {
-					allBoids.get(i).writeToCSV(allBoids.get(i).popData, "pos_graph" + i + ".csv");
-				}
-			}
-
-			Collections.sort(allBoids);
 
 			select();
 
@@ -306,14 +306,14 @@ public class BoidPopulation {
 		sb.append("gen,");
 
 		for (int i = 1; i < populationSize + 1; i++) {
-			sb.append("s1Worst" + i + ",");
-			sb.append("s2Worst" + i + ",");
-			sb.append("s3Worst" + i + ",");
-			sb.append("s4Worst" + i + ",");
-			sb.append("s5Worst" + i + ",");
-			sb.append("s6Worst" + i + ",");
-			sb.append("expWorst" + i + ",");
-			sb.append("fitWorst" + i + ",");
+			sb.append("s1Best" + i + ",");
+			sb.append("s2Best" + i + ",");
+			sb.append("s3Best" + i + ",");
+			sb.append("s4Best" + i + ",");
+			sb.append("s5Best" + i + ",");
+			sb.append("s6Best" + i + ",");
+			sb.append("expBest" + i + ",");
+			sb.append("fitBest" + i + ",");
 		}
 
 		for (int i = 1; i < populationSize + 1; i++) {
@@ -328,15 +328,16 @@ public class BoidPopulation {
 		}
 
 		for (int i = 1; i < populationSize + 1; i++) {
-			sb.append("s1Best" + i + ",");
-			sb.append("s2Best" + i + ",");
-			sb.append("s3Best" + i + ",");
-			sb.append("s4Best" + i + ",");
-			sb.append("s5Best" + i + ",");
-			sb.append("s6Best" + i + ",");
-			sb.append("expBest" + i + ",");
-			sb.append("fitBest" + i + ",");
+			sb.append("s1Worst" + i + ",");
+			sb.append("s2Worst" + i + ",");
+			sb.append("s3Worst" + i + ",");
+			sb.append("s4Worst" + i + ",");
+			sb.append("s5Worst" + i + ",");
+			sb.append("s6Worst" + i + ",");
+			sb.append("expWorst" + i + ",");
+			sb.append("fitWorst" + i + ",");
 		}
+
 		sb.append("\n");
 
 		for (int i = 0; i < arr[0][0][0].length; i++) {

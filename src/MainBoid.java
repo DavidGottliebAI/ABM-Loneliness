@@ -32,11 +32,12 @@ public class MainBoid {
 //			boids.add(b);
 //		}
 
-		hills.add(new Hill(105, 105, 15, 500));
-//		hills.add(new Hill(150, 150, 10, 100));
+		hills.add(new Hill(50, 50, 20, 1));
+		hills.add(new Hill(150, 150, 10, 5));
 
-		initialPositions.add(new int[] { 100, 100 });
-		initialPositions.add(new int[] { 110, 110 });
+		initialPositions.add(new int[] { 35, 30 });
+		initialPositions.add(new int[] { 35, 60 });
+		initialPositions.add(new int[] { 55, 30 });
 
 //		initialPositions.add(new int[] {50, 50});
 //		initialPositions.add(new int[] {60, 60});
@@ -51,11 +52,12 @@ public class MainBoid {
 
 		// x | y | interest | expected | % | sensitivity | fitness
 
-		Boid b1 = new Boid(initialPositions.get(0)[0], initialPositions.get(0)[1], 0.7, defaultBehavior, sensitivity0,
+		Boid b1 = new Boid(initialPositions.get(0)[0], initialPositions.get(0)[1], 0.5, defaultBehavior, sensitivityX,
 				"", "");
-		Boid b2 = new Boid(initialPositions.get(1)[0], initialPositions.get(1)[1], 0.42, defaultBehavior, sensitivityX,
+		Boid b2 = new Boid(initialPositions.get(1)[0], initialPositions.get(1)[1], 0.5, defaultBehavior, sensitivityX,
 				"", "blue");
-//		Boid b3 = new Boid(initialPositions.get(2)[0], initialPositions.get(2)[1], 1, defaultBehavior, sensitivityX, "", "red");
+		Boid b3 = new Boid(initialPositions.get(2)[0], initialPositions.get(2)[1], 0.5, defaultBehavior, sensitivityX, "",
+				"red");
 //		Boid b4 = new Boid(initialPositions.get(3)[0], initialPositions.get(3)[1], 1, defaultBehavior, sensitivityX, "", "pink");
 //		Boid b5 = new Boid(initialPositions.get(4)[0], initialPositions.get(4)[1], 1, defaultBehavior, sensitivityX, "", "orange");
 //		Boid b6 = new Boid(initialPositions.get(5)[0], initialPositions.get(5)[1], 1, defaultBehavior, sensitivityX, "", "green");
@@ -65,7 +67,7 @@ public class MainBoid {
 
 		boids.add(b1);
 		boids.add(b2);
-//		boids.add(b3);
+		boids.add(b3);
 //		boids.add(b4);
 //		boids.add(b5);
 //		boids.add(b6);
@@ -76,7 +78,7 @@ public class MainBoid {
 //		boids.add(b5);
 //		boids.add(b6);
 
-		InitializeBoids initialize = new InitializeBoids("viz", 2, "disease", 1000, true, hills, initialPositions, "");
+		InitializeBoids initialize = new InitializeBoids("viz", 3, "", 1000, true, hills, initialPositions, "");
 		initialize.setPositionsSpecified(boids);
 //		initialize.runSim();
 //		System.out.println(initialize.bigSum);
