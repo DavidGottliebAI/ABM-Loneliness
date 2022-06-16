@@ -24,14 +24,16 @@ public class BoidPopulation {
 	private String fitness;
 	private boolean loneliness;
 	private String experimentName;
+	private boolean generalize;
 
 	public BoidPopulation(int seed, boolean[] genome, String fitness, int populationSize, int metaPopulationSize,
-			boolean loneliness, ArrayList<Hill> hills, ArrayList<int[]> initialPositions, String experimentName)
-			throws IOException {
+			boolean loneliness, boolean generalize, ArrayList<Hill> hills, ArrayList<int[]> initialPositions,
+			String experimentName) throws IOException {
 		this.fitness = fitness;
 		this.populationSize = populationSize;
 		this.metaPopulationSize = metaPopulationSize;
 		this.loneliness = loneliness;
+		this.generalize = generalize;
 		this.experimentName = experimentName;
 
 		MyRandom.intializeRandom(seed);
@@ -64,48 +66,50 @@ public class BoidPopulation {
 			}
 
 			// Create population of alterate initial groups positions
-			ArrayList<InitializeBoids> boidsAlternates = new ArrayList<InitializeBoids>();
-			int offset = 1;
-			for (int k = 0; k < populationSize - 1; k++) {
-				InitializeBoids boidsInitialAlternate = new InitializeBoids("", populationSize, fitness, 1000,
-						this.loneliness, hills, initialPositions, experimentName);
-				boidsInitialAlternate.setBoidSize(populationSize);
-				ArrayList<Boid> boidsPopulationAlternate = new ArrayList<Boid>();
+			if (this.generalize) {
+				ArrayList<InitializeBoids> boidsAlternates = new ArrayList<InitializeBoids>();
+				int offset = 1;
+				for (int k = 0; k < populationSize - 1; k++) {
+					InitializeBoids boidsInitialAlternate = new InitializeBoids("", populationSize, fitness, 1000,
+							this.loneliness, hills, initialPositions, experimentName);
+					boidsInitialAlternate.setBoidSize(populationSize);
+					ArrayList<Boid> boidsPopulationAlternate = new ArrayList<Boid>();
 
-				for (int j = 0; j < boidsInitialAlternate.numBoids; j++) {
-					double[] sensitivity = { 0, 0, 0, 0, 0, 0 };
-					double[] defaultBehavior = { 1, 1, 1, 1, 1, 1 };
+					for (int j = 0; j < boidsInitialAlternate.numBoids; j++) {
+						double[] sensitivity = { 0, 0, 0, 0, 0, 0 };
+						double[] defaultBehavior = { 1, 1, 1, 1, 1, 1 };
 
-					int init = j + offset;
-					if (init > populationSize - 1)
-						init -= populationSize;
+						int init = j + offset;
+						if (init > populationSize - 1)
+							init -= populationSize;
 
-					Boid b = new Boid(boidsInitialAlternate.initialPositions.get(init)[0],
-							boidsInitialAlternate.initialPositions.get(init)[1], 0.0, defaultBehavior, sensitivity,
-							"one", "black");
-					// set each to allBoids values instead of random
-					if (genome[0])
-						b.setExpected(boidsPopulation.get(j).getExpected());
-					if (genome[1])
-						b.setSensitivity(0, boidsPopulation.get(j).getSensitivity().get(0));
-					if (genome[2])
-						b.setSensitivity(1, boidsPopulation.get(j).getSensitivity().get(1));
-					if (genome[3])
-						b.setSensitivity(2, boidsPopulation.get(j).getSensitivity().get(2));
-					if (genome[4])
-						b.setSensitivity(3, boidsPopulation.get(j).getSensitivity().get(3));
-					if (genome[5])
-						b.setSensitivity(4, boidsPopulation.get(j).getSensitivity().get(4));
-					if (genome[6])
-						b.setSensitivity(5, boidsPopulation.get(j).getSensitivity().get(5));
-					boidsPopulationAlternate.add(b);
+						Boid b = new Boid(boidsInitialAlternate.initialPositions.get(init)[0],
+								boidsInitialAlternate.initialPositions.get(init)[1], 0.0, defaultBehavior, sensitivity,
+								"one", "black");
+						// set each to allBoids values instead of random
+						if (genome[0])
+							b.setExpected(boidsPopulation.get(j).getExpected());
+						if (genome[1])
+							b.setSensitivity(0, boidsPopulation.get(j).getSensitivity().get(0));
+						if (genome[2])
+							b.setSensitivity(1, boidsPopulation.get(j).getSensitivity().get(1));
+						if (genome[3])
+							b.setSensitivity(2, boidsPopulation.get(j).getSensitivity().get(2));
+						if (genome[4])
+							b.setSensitivity(3, boidsPopulation.get(j).getSensitivity().get(3));
+						if (genome[5])
+							b.setSensitivity(4, boidsPopulation.get(j).getSensitivity().get(4));
+						if (genome[6])
+							b.setSensitivity(5, boidsPopulation.get(j).getSensitivity().get(5));
+						boidsPopulationAlternate.add(b);
+					}
+					offset++;
+
+					boidsInitialAlternate.setPositionsSpecified(boidsPopulationAlternate);
+					boidsAlternates.add(boidsInitialAlternate);
 				}
-				offset++;
-
-				boidsInitialAlternate.setPositionsSpecified(boidsPopulationAlternate);
-				boidsAlternates.add(boidsInitialAlternate);
+				generalizedBoids.add(boidsAlternates);
 			}
-			generalizedBoids.add(boidsAlternates);
 
 			boidsInitial.setPositionsSpecified(boidsPopulation);
 			allBoids.add(boidsInitial);
@@ -115,10 +119,7 @@ public class BoidPopulation {
 		this.boxData = new double[genome.length + 1][metaPopulationSize * populationSize];
 
 		evolutionLoop(genome, seed);
-//		for(int i = 0; i < allBoids.size(); i++) {
-//			allBoids.get(i).writeToCSV(allBoids.get(i).popData, "pop_data.csv (" + i + ")");
-//		}
-//		allBoids.get(0).writeToCSV(allBoids.get(0).popData, "myfile.csv");
+
 		writeToCSV(genData, "gen_data.csv");
 		writeToBoxCSV(boxData, "box_data.csv");
 
@@ -179,13 +180,16 @@ public class BoidPopulation {
 			}
 
 			for (int j = 0; j < metaPopulationSize; j++) {
-				for (int i = 0; i < populationSize - 1; i++) {
-					generalizedBoids.get(k).get(i).runSim();
-				}
+
 				allBoids.get(j).runSim();
 				// Add fitnesses of other combinations of starting positions
-				for (int r = 0; r < populationSize - 1; r++) {
-					allBoids.get(j).totalFitness += generalizedBoids.get(k).get(r).totalFitness;
+				if (this.generalize) {
+					for (int i = 0; i < populationSize - 1; i++) {
+						generalizedBoids.get(k).get(i).runSim();
+					}
+					for (int r = 0; r < populationSize - 1; r++) {
+						allBoids.get(j).totalFitness += generalizedBoids.get(k).get(r).totalFitness;
+					}
 				}
 			}
 
@@ -205,7 +209,10 @@ public class BoidPopulation {
 
 			mutate(genome, seed);
 
-			updateGeneralBoids();
+			if (this.generalize) {
+				updateGeneralBoids();
+			}
+
 		}
 	}
 

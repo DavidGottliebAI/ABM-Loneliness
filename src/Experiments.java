@@ -27,7 +27,7 @@ public class Experiments {
 		initialPositions.add(new int[] { 130, 130 });
 
 		boolean[] exampleGenome = { true, true, true, true, true, true, true };
-		new BoidPopulation(5, exampleGenome, "predator", 3, 100, false, hills, initialPositions, experimentName);
+		new BoidPopulation(5, exampleGenome, "predator", 3, 100, false, false, hills, initialPositions, experimentName);
 	}
 
 	private static void experiment1() throws IOException {
@@ -42,7 +42,7 @@ public class Experiments {
 		initialPositions.add(new int[] { 110, 110 });
 
 		boolean[] exampleGenome = { true, true, true, true, true, true, true };
-		new BoidPopulation(5, exampleGenome, "", 2, 100, false, hills, initialPositions, experimentName);
+		new BoidPopulation(5, exampleGenome, "", 2, 100, false, false, hills, initialPositions, experimentName);
 	}
 
 	// Two hills, two agents
@@ -59,7 +59,7 @@ public class Experiments {
 		initialPositions.add(new int[] { 145, 145 });
 
 		boolean[] exampleGenome = { true, true, true, true, true, true, true };
-		new BoidPopulation(5, exampleGenome, "", 2, 100, false, hills, initialPositions, experimentName);
+		new BoidPopulation(5, exampleGenome, "", 2, 100, false, true, hills, initialPositions, experimentName);
 	}
 
 	private static void experiment2b() throws IOException {
@@ -75,7 +75,7 @@ public class Experiments {
 		initialPositions.add(new int[] { 145, 145 });
 
 		boolean[] exampleGenome = { true, true, true, true, true, true, true };
-		new BoidPopulation(5, exampleGenome, "", 2, 100, true, hills, initialPositions, experimentName);
+		new BoidPopulation(5, exampleGenome, "", 2, 100, true, true, hills, initialPositions, experimentName);
 	}
 
 	private static void experiment3a() throws IOException {
@@ -91,7 +91,7 @@ public class Experiments {
 		initialPositions.add(new int[] { 90, 130 });
 
 		boolean[] exampleGenome = { true, true, true, true, true, true, true };
-		new BoidPopulation(5, exampleGenome, "predator", 3, 100, false, hills, initialPositions, experimentName);
+		new BoidPopulation(5, exampleGenome, "predator", 3, 100, false, false, hills, initialPositions, experimentName);
 	}
 
 	private static void experiment3b() throws IOException {
@@ -107,7 +107,7 @@ public class Experiments {
 		initialPositions.add(new int[] { 90, 130 });
 
 		boolean[] exampleGenome = { true, true, true, true, true, true, true };
-		new BoidPopulation(6, exampleGenome, "predator", 3, 100, true, hills, initialPositions, experimentName);
+		new BoidPopulation(6, exampleGenome, "predator", 3, 100, true, false, hills, initialPositions, experimentName);
 	}
 
 	private static void experiment4a() throws IOException {
@@ -127,7 +127,7 @@ public class Experiments {
 		initialPositions.add(new int[] { 145, 145 });
 
 		boolean[] exampleGenome = { true, true, true, true, true, true, true };
-		new BoidPopulation(5, exampleGenome, "", 6, 100, false, hills, initialPositions, experimentName);
+		new BoidPopulation(5, exampleGenome, "", 6, 100, false, true, hills, initialPositions, experimentName);
 	}
 
 	private static void experiment4b() throws IOException {
@@ -147,7 +147,7 @@ public class Experiments {
 		initialPositions.add(new int[] { 145, 145 });
 
 		boolean[] exampleGenome = { true, true, true, true, true, true, true };
-		new BoidPopulation(5, exampleGenome, "", 6, 100, true, hills, initialPositions, experimentName);
+		new BoidPopulation(5, exampleGenome, "", 6, 100, true, true, hills, initialPositions, experimentName);
 	}
 
 	private static void experiment5a() throws IOException {
@@ -177,7 +177,7 @@ public class Experiments {
 		initialPositions.add(new int[] { 150, 150 });
 
 		boolean[] exampleGenome = { true, true, true, true, true, true, true };
-		new BoidPopulation(5, exampleGenome, "", 9, 100, false, hills, initialPositions, experimentName);
+		new BoidPopulation(5, exampleGenome, "", 9, 100, false, true, hills, initialPositions, experimentName);
 	}
 
 	private static void experiment5b() throws IOException {
@@ -207,7 +207,7 @@ public class Experiments {
 		initialPositions.add(new int[] { 150, 150 });
 
 		boolean[] exampleGenome = { true, true, true, true, true, true, true };
-		new BoidPopulation(5, exampleGenome, "", 9, 100, true, hills, initialPositions, experimentName);
+		new BoidPopulation(5, exampleGenome, "", 9, 100, true, true, hills, initialPositions, experimentName);
 	}
 
 	private static void experiment6a() throws IOException {
@@ -227,7 +227,7 @@ public class Experiments {
 		initialPositions.add(new int[] { 130, 130 });
 
 		boolean[] exampleGenome = { true, true, true, true, true, true, true };
-		new BoidPopulation(5, exampleGenome, "predator", 6, 100, false, hills, initialPositions, experimentName);
+		new BoidPopulation(5, exampleGenome, "predator", 6, 100, false, false, hills, initialPositions, experimentName);
 	}
 
 	private static void experiment6b() throws IOException {
@@ -247,7 +247,7 @@ public class Experiments {
 		initialPositions.add(new int[] { 130, 130 });
 
 		boolean[] exampleGenome = { true, true, true, true, true, true, true };
-		new BoidPopulation(5, exampleGenome, "predator", 6, 100, true, hills, initialPositions, experimentName);
+		new BoidPopulation(5, exampleGenome, "predator", 6, 100, true, false, hills, initialPositions, experimentName);
 	}
 
 	private static void experiment7a() throws IOException {
@@ -266,7 +266,7 @@ public class Experiments {
 		initialPositions.add(new int[] { 50, 60 });
 
 		boolean[] exampleGenome = { true, true, true, true, true, true, true };
-		new BoidPopulation(5, exampleGenome, "disease", 6, 100, false, hills, initialPositions, experimentName);
+		new BoidPopulation(5, exampleGenome, "disease", 6, 100, false, false, hills, initialPositions, experimentName);
 	}
 
 	private static void experiment7b() throws IOException {
@@ -285,7 +285,7 @@ public class Experiments {
 		initialPositions.add(new int[] { 50, 60 });
 
 		boolean[] exampleGenome = { true, true, true, true, true, true, true };
-		new BoidPopulation(5, exampleGenome, "disease", 6, 100, true, hills, initialPositions, experimentName);
+		new BoidPopulation(5, exampleGenome, "disease", 6, 100, true, false, hills, initialPositions, experimentName);
 	}
 
 	private static void experiment8a() throws IOException {
@@ -308,7 +308,7 @@ public class Experiments {
 		}
 
 		boolean[] exampleGenome = { true, true, true, true, true, true, true };
-		new BoidPopulation(5, exampleGenome, "", 50, 100, false, hills, initialPositions, experimentName);
+		new BoidPopulation(5, exampleGenome, "", 50, 100, false, false, hills, initialPositions, experimentName);
 	}
 
 	private static void experiment8b() throws IOException {
@@ -331,7 +331,7 @@ public class Experiments {
 		}
 
 		boolean[] exampleGenome = { true, true, true, true, true, true, true };
-		new BoidPopulation(5, exampleGenome, "", 50, 100, true, hills, initialPositions, experimentName);
+		new BoidPopulation(5, exampleGenome, "", 50, 100, true, false, hills, initialPositions, experimentName);
 	}
 
 	private static void experiment9a() throws IOException {
@@ -354,7 +354,8 @@ public class Experiments {
 		}
 
 		boolean[] exampleGenome = { true, true, true, true, true, true, true };
-		new BoidPopulation(5, exampleGenome, "predator", 50, 100, false, hills, initialPositions, experimentName);
+		new BoidPopulation(5, exampleGenome, "predator", 50, 100, false, false, hills, initialPositions,
+				experimentName);
 	}
 
 	private static void experiment9b() throws IOException {
@@ -377,7 +378,7 @@ public class Experiments {
 		}
 
 		boolean[] exampleGenome = { true, true, true, true, true, true, true };
-		new BoidPopulation(5, exampleGenome, "predator", 50, 100, true, hills, initialPositions, experimentName);
+		new BoidPopulation(5, exampleGenome, "predator", 50, 100, true, false, hills, initialPositions, experimentName);
 	}
 
 	private static void experiment10a() throws IOException {
@@ -400,7 +401,7 @@ public class Experiments {
 		}
 
 		boolean[] exampleGenome = { true, true, true, true, true, true, true };
-		new BoidPopulation(5, exampleGenome, "disease", 50, 100, false, hills, initialPositions, experimentName);
+		new BoidPopulation(5, exampleGenome, "disease", 50, 100, false, false, hills, initialPositions, experimentName);
 	}
 
 	private static void experiment10b() throws IOException {
@@ -423,7 +424,7 @@ public class Experiments {
 		}
 
 		boolean[] exampleGenome = { true, true, true, true, true, true, true };
-		new BoidPopulation(5, exampleGenome, "disease", 50, 100, true, hills, initialPositions, experimentName);
+		new BoidPopulation(5, exampleGenome, "disease", 50, 100, true, false, hills, initialPositions, experimentName);
 	}
 
 	private static void experiment11a() throws IOException {
@@ -443,7 +444,7 @@ public class Experiments {
 		initialPositions.add(new int[] { 150, 145 });
 
 		boolean[] exampleGenome = { true, true, true, true, true, true, true };
-		new BoidPopulation(5, exampleGenome, "", 6, 100, false, hills, initialPositions, experimentName);
+		new BoidPopulation(5, exampleGenome, "", 6, 100, false, false, hills, initialPositions, experimentName);
 	}
 
 	private static void experiment11b() throws IOException {
@@ -463,7 +464,7 @@ public class Experiments {
 		initialPositions.add(new int[] { 150, 145 });
 
 		boolean[] exampleGenome = { true, true, true, true, true, true, true };
-		new BoidPopulation(5, exampleGenome, "", 6, 100, true, hills, initialPositions, experimentName);
+		new BoidPopulation(5, exampleGenome, "", 6, 100, true, false, hills, initialPositions, experimentName);
 	}
 
 	private static void experiment12a() throws IOException {
@@ -482,7 +483,7 @@ public class Experiments {
 		initialPositions.add(new int[] { 60, 45 });
 
 		boolean[] exampleGenome = { true, true, true, true, true, true, true };
-		new BoidPopulation(5, exampleGenome, "", 5, 100, false, hills, initialPositions, experimentName);
+		new BoidPopulation(5, exampleGenome, "", 5, 100, false, true, hills, initialPositions, experimentName);
 	}
 
 	private static void experiment12b() throws IOException {
@@ -501,7 +502,7 @@ public class Experiments {
 		initialPositions.add(new int[] { 60, 45 });
 
 		boolean[] exampleGenome = { true, true, true, true, true, true, true };
-		new BoidPopulation(5, exampleGenome, "", 5, 100, true, hills, initialPositions, experimentName);
+		new BoidPopulation(5, exampleGenome, "", 5, 100, true, true, hills, initialPositions, experimentName);
 	}
 
 }
