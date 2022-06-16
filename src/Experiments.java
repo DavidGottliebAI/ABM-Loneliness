@@ -11,7 +11,7 @@ public class Experiments {
 	private static int elevationLow = 10;
 
 	public static void main(String[] args) throws IOException {
-		experiment5b();
+		experiment7a();
 	}
 
 	private static void experimentDistribution() throws IOException {

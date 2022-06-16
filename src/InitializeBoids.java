@@ -5,7 +5,6 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -45,7 +44,7 @@ public class InitializeBoids implements Comparable<InitializeBoids>, Iterable<Bo
 	public static int dimEnvironmentY = 200;
 	private static int boidDistance = 5;
 	private static int velBoundChg = 2;
-	private static int timeSteps = 1000;
+	private int timeSteps = 1000;
 	private static int interactionDistance = 10;
 	private static int maxConnections = 3;
 	private static int resourceDistance = 20;
@@ -199,6 +198,7 @@ public class InitializeBoids implements Comparable<InitializeBoids>, Iterable<Bo
 							if (boids.get(k).toKill) {
 								boids.get(k).removeConnections();
 								boids.remove(boids.get(k));
+								fitnessData = removeRowAtIndex(fitnessData, k);
 							}
 						}
 						// Set current x, y, fitness, and t for each boid
@@ -210,7 +210,6 @@ public class InitializeBoids implements Comparable<InitializeBoids>, Iterable<Bo
 
 						for (int k = 0; k < boids.size(); k++) {
 							bigSum += boids.get(k).getFitness();
-//							System.out.println(bigSum);
 							fitnessData[k][curTime] = boids.get(k).getFitness();
 						}
 
@@ -281,6 +280,7 @@ public class InitializeBoids implements Comparable<InitializeBoids>, Iterable<Bo
 						boids.get(k).removeConnections();
 						boids.remove(boids.get(k));
 						numBoids--;
+						fitnessData = removeRowAtIndex(fitnessData, k);
 						if (numBoids == 0) {
 							curTime = 0;
 							calculateTotalFitness();
@@ -303,6 +303,18 @@ public class InitializeBoids implements Comparable<InitializeBoids>, Iterable<Bo
 				return;
 			}
 		}
+	}
+
+	private double[][] removeRowAtIndex(double[][] matrix, int index) {
+		double[][] newMatrix = new double[matrix.length - 1][matrix[0].length];
+		for (int i = 0; i < matrix.length - 1; i++) {
+			if(i != index) {
+				for (int j = 0; j < matrix[0].length; j++) {
+					newMatrix[i][j] = matrix[i][j];
+				}
+			}
+		}
+		return newMatrix;
 	}
 
 	private void spread(Boid boid) {

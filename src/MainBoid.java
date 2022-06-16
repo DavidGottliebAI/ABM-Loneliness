@@ -32,11 +32,11 @@ public class MainBoid {
 //			boids.add(b);
 //		}
 
-		hills.add(new Hill(200, 100, 15, 500));
+		hills.add(new Hill(105, 105, 15, 500));
 //		hills.add(new Hill(150, 150, 10, 100));
 
-		initialPositions.add(new int[] { 10, 100 });
-		initialPositions.add(new int[] { 145, 145 });
+		initialPositions.add(new int[] { 100, 100 });
+		initialPositions.add(new int[] { 110, 110 });
 
 //		initialPositions.add(new int[] {50, 50});
 //		initialPositions.add(new int[] {60, 60});
@@ -64,7 +64,7 @@ public class MainBoid {
 //		Boid b9 = new Boid(initialPositions.get(8)[0], initialPositions.get(8)[1], 1, defaultBehavior1, sensitivity0, "", "green");
 
 		boids.add(b1);
-//		boids.add(b2);
+		boids.add(b2);
 //		boids.add(b3);
 //		boids.add(b4);
 //		boids.add(b5);
@@ -76,7 +76,7 @@ public class MainBoid {
 //		boids.add(b5);
 //		boids.add(b6);
 
-		InitializeBoids initialize = new InitializeBoids("viz", 2, "", 1000, true, hills, initialPositions, "");
+		InitializeBoids initialize = new InitializeBoids("viz", 2, "disease", 1000, true, hills, initialPositions, "");
 		initialize.setPositionsSpecified(boids);
 //		initialize.runSim();
 //		System.out.println(initialize.bigSum);
