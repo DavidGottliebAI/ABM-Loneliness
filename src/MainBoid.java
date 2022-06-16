@@ -32,10 +32,10 @@ public class MainBoid {
 //			boids.add(b);
 //		}
 
-//		hills.add(new Hill(50, 50, 10, 500));
+		hills.add(new Hill(200, 100, 15, 500));
 //		hills.add(new Hill(150, 150, 10, 100));
 
-		initialPositions.add(new int[] { 145, 50 });
+		initialPositions.add(new int[] { 10, 100 });
 		initialPositions.add(new int[] { 145, 145 });
 
 //		initialPositions.add(new int[] {50, 50});
@@ -51,7 +51,7 @@ public class MainBoid {
 
 		// x | y | interest | expected | % | sensitivity | fitness
 
-		Boid b1 = new Boid(initialPositions.get(0)[0], initialPositions.get(0)[1], 0.7, defaultBehavior, sensitivityX,
+		Boid b1 = new Boid(initialPositions.get(0)[0], initialPositions.get(0)[1], 0.7, defaultBehavior, sensitivity0,
 				"", "");
 		Boid b2 = new Boid(initialPositions.get(1)[0], initialPositions.get(1)[1], 0.42, defaultBehavior, sensitivityX,
 				"", "blue");

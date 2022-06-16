@@ -224,7 +224,7 @@ public class InitializeBoids implements Comparable<InitializeBoids>, Iterable<Bo
 						if (curTime >= timeSteps) {
 							simulationRunning = false;
 							calculateTotalFitness();
-//							System.out.println(totalFitness);
+							System.out.println(totalFitness);
 							return;
 						}
 					}
@@ -323,11 +323,8 @@ public class InitializeBoids implements Comparable<InitializeBoids>, Iterable<Bo
 			for (int j = 0; j < timeSteps; j++) {
 				sum += fitnessData[i][j];
 			}
-//			System.out.println(boids.get(i).getColor() + " :" + sum);
-//			sum /= timeSteps;
 			totalSum += sum;
 		}
-//		System.out.println(totalSum);
 		totalFitness = totalSum;
 	}
 
@@ -469,16 +466,16 @@ public class InitializeBoids implements Comparable<InitializeBoids>, Iterable<Bo
 			b.position[0] += b.velocity[0];
 			b.position[1] += b.velocity[1];
 
-			if (b.position[0] > dimEnvironmentX) {
-				b.position[0] = 0;
-			} else if (b.position[0] < 0) {
-				b.position[0] = dimEnvironmentX;
-			}
-			if (b.position[1] > dimEnvironmentY) {
-				b.position[1] = 0;
-			} else if (b.position[1] < 0) {
-				b.position[1] = dimEnvironmentY;
-			}
+//			if (b.position[0] > dimEnvironmentX) {
+//				b.position[0] = 0;
+//			} else if (b.position[0] < 0) {
+//				b.position[0] = dimEnvironmentX;
+//			}
+//			if (b.position[1] > dimEnvironmentY) {
+//				b.position[1] = 0;
+//			} else if (b.position[1] < 0) {
+//				b.position[1] = dimEnvironmentY;
+//			}
 
 			interaction(b);
 
